@@ -1,0 +1,77 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-top: 50px;
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: #333;
+    border: none;
+    margin-bottom: 0;
+}
+
+.navbar .navbar-header .navbar-brand {
+    color: #fff;
+    font-size: 24px;
+    padding: 10px 20px;
+    text-decoration: none;
+}
+
+.navbar .navbar-header .navbar-brand:hover {
+    color: #ddd;
+}
+
+.navbar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+.navbar-nav li {
+    display: inline;
+    margin: 0 15px;
+}
+
+.navbar-nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 15px 20px;
+    display: inline-block;
+}
+
+.navbar-nav a:hover {
+    background-color: #575757;
+    border-radius: 4px;
+}
+
+/* Container to keep content inside a limited width */
+.container-fluid {
+    padding: 0;
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 768px) {
+    .navbar-nav {
+        display: block;
+        text-align: left;
+    }
+
+    .navbar-nav li {
+        margin: 10px 0;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+}
