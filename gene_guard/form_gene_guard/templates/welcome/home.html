@@ -1,26 +1,4 @@
-{% load static%}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/stylenavbar.css' %}">
-    <title>{{title}}</title>
-</head>
-<body>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="#">WebSiteName</a>
-          </div>
-          <ul class="nav navbar-nav">
-            
-            <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'formulaire' %}">Formulaire</a></li>
-            <li><a href="{% url 'resultat' %}">Resultat</a></li>
-          </ul>
-        </div>
-      </nav>
-    <h1>home page</h1>
-</body>
-</html>
+{% extends 'welcome/base.html'%}
+{% block content%}
+<h1>Home page</h1>
+{% endblock content%}
