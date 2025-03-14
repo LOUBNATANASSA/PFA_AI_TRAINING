@@ -1,4 +1,79 @@
 {% extends 'welcome/base.html'%}
+{% load static%}
 {% block content%}
-<h1>Home page</h1>
+<div class="slider">
+  <div class="slides">
+    <img src="{% static 'image/slide1.jpg' %}" class="active" alt="Image 1">
+    <img src="{% static 'image/slide2.jpg' %}" alt="Image 2">
+    <img src="{% static 'image/slide3.jpg' %}" alt="Image 3">
+    
+  </div>
+</div>
+
+<div class="card-container">
+<div class="card">
+  <img src="{% static 'image/fr.png' %}" alt="icons">
+    <h3>Évaluer les maladies</h3>
+   
+</div>
+<div class="card">
+  <img src="{% static 'image/adn.png' %}" alt="icons">
+    <h3>Estimer les risques</h3>
+    
+</div>
+<div class="card">
+  <img src="{% static 'image/temps-rapide.png' %}" alt="icons">
+    <h3>Formulaire rapide</h3>
+    
+</div>
+<div class="card">
+  <img src="{% static 'image/precision.png' %}" alt="icons">
+    <h3>Probabilités exactes</h3>
+  
+</div>
+</div>
+
+
+
+<div class="partie_image">
+<div class="paragraphes">
+  <p>Ceci est un paragraphe à côté de l'image.</p>
+  <p>Un autre paragraphe pour plus de contenu.</p>
+</div>
+<div class="image">
+  <img src="{% static 'image/test.gif' %}" alt="Description de l'image">
+</div>
+</div>
+
+<div class="partie_image">
+<div class="image">
+<img src="{% static 'image/t.gif' %}" alt="Description de l'image">
+</div>
+<div class="paragraphes">
+<p>Ceci est un paragraphe à côté de l'image.</p>
+<p>Un autre paragraphe pour plus de contenu.</p>
+</div>
+
+</div>
+
+<div class="partie_image">
+<div class="paragraphes">
+<p>Ceci est un paragraphe à côté de l'image.</p>
+<p>Un autre paragraphe pour plus de contenu.</p>
+</div>
+<div class="image">
+<img src="{% static 'image/rr.gif' %}" alt="Description de l'image">
+</div>
+</div>
+
+<div class="partie_green" >
+
+<h2>Un travail d’équipe plus efficace est à portée de main...</h2>
+<button class="btn">Starting</button>
+</div>
+<button id="backToTop" class="back-to-top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+<script src="{% static 'js/scriptHOME.js' %}" defer></script>
+
 {% endblock content%}
