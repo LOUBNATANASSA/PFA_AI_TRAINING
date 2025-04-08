@@ -1,0 +1,389 @@
+{% extends 'welcome/base.html' %} 
+{% load static %} 
+{% block content %}
+<div class="bodyform">
+<div class="assessment-container">
+  <h2>Cholesterol Assessment</h2>
+  
+  <div class="progress-container">
+    <div class="progress-line">
+      <div class="progress-fill" id="progressFill"></div>
+      <div class="progress-circles">
+        <div class="progress-circle active" id="circle1">1</div>
+        <div class="progress-circle" id="circle2">2</div>
+        <div class="progress-circle" id="circle3">3</div>
+        <div class="progress-circle" id="circle4">4</div>
+        <div class="progress-circle" id="circle5">5</div>
+        <div class="progress-circle" id="circle6">6</div>
+        <div class="progress-circle" id="circle7">7</div>
+        <div class="progress-circle" id="circle8">8</div>
+        <div class="progress-circle" id="circle9">9</div>
+        <div class="progress-circle" id="circle10">10</div>
+        <div class="progress-circle" id="circle11">11</div>
+        <div class="progress-circle" id="circle12">12</div>
+        <div class="progress-circle" id="circle13">13</div>
+        <div class="progress-circle" id="circle14">14</div>
+        <div class="progress-circle" id="circle15">15</div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="errorMessage" class="error-message hidden">
+    All questions must be answered before you continue.
+  </div>
+  
+  <form id="AssessmentForm">
+    <div class="question-container">
+      <!-- Question 1-->
+      <div class="question active" id="question1">
+        <label>1. Did one of your parents (mother or father) have high cholesterol (> 250 mg/dL)?</label>
+        <div class="radio-group">
+          <label class="radio-option" id="parentCholesterolYes">
+            <input type="radio" name="parentCholesterol" value="yes" required>
+            <span class="radio-circle"></span>
+            Yes
+          </label>
+          <label class="radio-option" id="parentCholesterolNo">
+            <input type="radio" name="parentCholesterol" value="no">
+            <span class="radio-circle"></span>
+            No
+          </label>
+          <label class="radio-option" id="parentCholesterolUnknown">
+            <input type="radio" name="parentCholesterol" value="unknown">
+            <span class="radio-circle"></span>
+            I don't know
+          </label>
+        </div>
+        <div class="btn-group">
+          <div></div>  
+          <button type="button" class="next-btn" onclick="nextQuestion(1)">Next</button>
+        </div>
+      </div>
+      
+      <!-- Question 2 -->
+      <div class="question" id="question2">
+        <label>2. Has a family member been diagnosed with high cholesterol?</label>
+        <div class="radio-group">
+          <label class="radio-option" id="familyCholesterolYes">
+            <input type="radio" name="familyCholesterol" value="yes" required>
+            <span class="radio-circle"></span>
+            Yes
+          </label>
+          <label class="radio-option" id="familyCholesterolNo">
+            <input type="radio" name="familyCholesterol" value="no">
+            <span class="radio-circle"></span>
+            No
+          </label>
+          <label class="radio-option" id="familyCholesterolUnknown">
+            <input type="radio" name="familyCholesterol" value="unknown">
+            <span class="radio-circle"></span>
+            I don't know
+          </label>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="prev-btn" onclick="prevQuestion(2)">Previous</button>
+          <button type="button" class="next-btn" onclick="nextQuestion(2)">Next</button>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="question" id="question3">
+        <label>3. Did one or more of your family members have a heart condition before age 55 (male) or 65 (female)?</label>
+        <div class="radio-group">
+          <label class="radio-option" id="familyHeartConditionYes">
+            <input type="radio" name="familyHeartCondition" value="yes" required>
+            <span class="radio-circle"></span>
+            Yes
+          </label>
+          <label class="radio-option" id="familyHeartConditionNo">
+            <input type="radio" name="familyHeartCondition" value="no">
+            <span class="radio-circle"></span>
+            No
+          </label>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="prev-btn" onclick="prevQuestion(3)">Previous</button>
+          <button type="button" class="next-btn" onclick="nextQuestion(3)">Next</button>
+        </div>
+      </div>
+      
+      <!-- Question 4 -->
+      <div class="question" id="question4">
+        <label>4. Have there been any cases of sudden cardiac death in your family before age 60?</label>
+        <div class="radio-group">
+          <label class="radio-option" id="cardiacDeathYes">
+            <input type="radio" name="cardiacDeath" value="yes" required>
+            <span class="radio-circle"></span>
+            Yes
+          </label>
+          <label class="radio-option" id="cardiacDeathNo">
+            <input type="radio" name="cardiacDeath" value="no">
+            <span class="radio-circle"></span>
+            No
+          </label>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="prev-btn" onclick="prevQuestion(4)">Previous</button>
+          <button type="button" class="next-btn" onclick="nextQuestion(4)">Next</button>
+        </div>
+      </div>
+      
+      <!-- Question 5-->
+      <div class="question" id="question5">
+        <label>5. Have you ever had a lipid test (blood cholesterol check)?</label>
+        <div class="radio-group">
+          <label class="radio-option" id="lipidTestYes">
+            <input type="radio" name="lipidTest" value="yes" required>
+            <span class="radio-circle"></span>
+            Yes
+          </label>
+          <label class="radio-option" id="lipidTestNo">
+            <input type="radio" name="lipidTest" value="no">
+            <span class="radio-circle"></span>
+            No
+          </label>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="prev-btn" onclick="prevQuestion(5)">Previous</button>
+          <button type="button" class="next-btn" onclick="nextQuestion(5)">Next</button>
+        </div>
+      </div>
+
+      <!-- Question 6-->
+      <div class="question" id="question6">
+        <label for="ldlLevel">6. If so, what was the LDL-C (bad cholesterol) level?</label>
+        <select id="ldlLevel" name="ldlLevel" required>
+          <option value="" disabled selected>Select an option</option>
+          <option value="below130">< 130 mg/dL</option>
+          <option value="130to190">130-190 mg/dL</option>
+          <option value="above190">190 mg/dL or higher</option>
+        </select>
+        <div class="btn-group">
+          <button type="button" class="prev-btn" onclick="prevQuestion(6)">Previous</button>
+          <button type="button" class="next-btn" onclick="nextQuestion(6)">Next</button>
+        </div>
+      </div>
+      
+      <!-- Question 7-->
+      <div class="question" id="question7">
+        <label>7. Have you ever been told that you have high cholesterol, even without treatment?</label>
+        <div class="radio-group">
+          <label class="radio-option" id="toldHighCholesterolYes">
+            <input type="radio" name="toldHighCholesterol" value="yes" required>
+            <span class="radio-circle"></span>
+            Yes
+          </label>
+          <label class="radio-option" id="toldHighCholesterolNo">
+            <input type="radio" name="toldHighCholesterol" value="no">
+            <span class="radio-circle"></span>
+            No
+          </label>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="prev-btn" onclick="prevQuestion(7)">Previous</button>
+          <button type="button" class="next-btn" onclick="nextQuestion(7)">Next</button>
+        </div>
+      </div>
+
+      <!-- Question 8-->
+      <div class="question" id="question8">
+        <label>8. Are you currently taking statins or other cholesterol medications?</label>
+        <div class="radio-group">
+          <label class="radio-option" id="statinsYes">
+            <input type="radio" name="statins" value="yes" required>
+            <span class="radio-circle"></span>
+            Yes
+          </label>
+          <label class="radio-option" id="statinsNo">
+            <input type="radio" name="statins" value="no">
+            <span class="radio-circle"></span>
+            No
+          </label>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="prev-btn" onclick="prevQuestion(8)">Previous</button>
+          <button type="button" class="next-btn" onclick="nextQuestion(8)">Next</button>
+        </div>
+      </div>
+
+      <!-- Question 9-->
+      <div class="question" id="question9">
+        <label>9. Do you have xanthelasmas (yellow deposits around the eyelids)?</label>
+        <div class="radio-group">
+          <label class="radio-option" id="xanthelasmasYes">
+            <input type="radio" name="xanthelasmas" value="yes" required>
+            <span class="radio-circle"></span>
+            Yes
+          </label>
+          <label class="radio-option" id="xanthelasmasNo">
+            <input type="radio" name="xanthelasmas" value="no">
+            <span class="radio-circle"></span>
+            No
+          </label>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="prev-btn" onclick="prevQuestion(9)">Previous</button>
+          <button type="button" class="next-btn" onclick="nextQuestion(9)">Next</button>
+        </div>
+      </div>
+
+      <!-- Question 10-->
+      <div class="question" id="question10">
+        <label>10. Have you noticed yellow nodules on the tendons (especially in the Achilles or fingers)?</label>
+        <div class="radio-group">
+          <label class="radio-option" id="yellowNodulesYes">
+            <input type="radio" name="yellowNodules" value="yes" required>
+            <span class="radio-circle"></span>
+            Yes
+          </label>
+          <label class="radio-option" id="yellowNodulesNo">
+            <input type="radio" name="yellowNodules" value="no">
+            <span class="radio-circle"></span>
+            No
+          </label>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="prev-btn" onclick="prevQuestion(10)">Previous</button>
+          <button type="button" class="next-btn" onclick="nextQuestion(10)">Next</button>
+        </div>
+      </div>
+
+      <!-- Question 11 -->
+      <div class="question" id="question11">
+        <label>11. Has your doctor ever noticed a corneal arch (white ring around the iris in people under 45)?</label>
+        <div class="radio-group">
+          <label class="radio-option" id="cornealArchYes">
+            <input type="radio" name="cornealArch" value="yes" required>
+            <span class="radio-circle"></span>
+            Yes
+          </label>
+          <label class="radio-option" id="cornealArchNo">
+            <input type="radio" name="cornealArch" value="no">
+            <span class="radio-circle"></span>
+            No
+          </label>
+          <label class="radio-option" id="cornealArchUnknown">
+            <input type="radio" name="cornealArch" value="unknown">
+            <span class="radio-circle"></span>
+            I don't know
+          </label>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="prev-btn" onclick="prevQuestion(11)">Previous</button>
+          <button type="button" class="next-btn" onclick="nextQuestion(11)">Next</button>
+        </div>
+      </div>
+      
+      <!-- Question 12-->
+      <div class="question" id="question12">
+        <label>12. Do you smoke?</label>
+        <div class="radio-group">
+          <label class="radio-option" id="smokeYes">
+            <input type="radio" name="smoke" value="yes" required>
+            <span class="radio-circle"></span>
+            Yes
+          </label>
+          <label class="radio-option" id="smokeNo">
+            <input type="radio" name="smoke" value="no">
+            <span class="radio-circle"></span>
+            No
+          </label>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="prev-btn" onclick="prevQuestion(12)">Previous</button>
+          <button type="button" class="next-btn" onclick="nextQuestion(12)">Next</button>
+        </div>
+      </div>
+
+      <!-- Question 13-->
+      <div class="question" id="question13">
+        <label>13. Do you have diabetes or high blood pressure?</label>
+        <div class="radio-group">
+          <label class="radio-option" id="diabetesHypertensionYes">
+            <input type="radio" name="diabetesHypertension" value="yes" required>
+            <span class="radio-circle"></span>
+            Yes
+          </label>
+          <label class="radio-option" id="diabetesHypertensionNo">
+            <input type="radio" name="diabetesHypertension" value="no">
+            <span class="radio-circle"></span>
+            No
+          </label>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="prev-btn" onclick="prevQuestion(13)">Previous</button>
+          <button type="button" class="next-btn" onclick="nextQuestion(13)">Next</button>
+        </div>
+      </div>
+
+      <!-- Question 14-->
+      <div class="question" id="question14">
+        <label>14. Is your BMI (body mass index) greater than 25?</label>
+        <div class="radio-group">
+          <label class="radio-option" id="bmiYes">
+            <input type="radio" name="bmi" value="yes" required>
+            <span class="radio-circle"></span>
+            Yes
+          </label>
+          <label class="radio-option" id="bmiNo">
+            <input type="radio" name="bmi" value="no">
+            <span class="radio-circle"></span>
+            No
+          </label>
+          <label class="radio-option" id="bmiUnknown">
+            <input type="radio" name="bmi" value="unknown">
+            <span class="radio-circle"></span>
+            I don't know
+          </label>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="prev-btn" onclick="prevQuestion(14)">Previous</button>
+          <button type="button" class="next-btn" onclick="nextQuestion(14)">Next</button>
+        </div>
+      </div>
+
+      <!-- Question 15 -->
+      <div class="question" id="question15">
+        <label>15. If a parent is sick (confirmed HF), in your opinion:</label>
+        <div class="sub-question">
+          <p>a. Are all her children sick?</p>
+          <div class="radio-group">
+            <label class="radio-option" id="allChildrenSickYes">
+              <input type="radio" name="allChildrenSick" value="yes" required>
+              <span class="radio-circle"></span>
+              Yes
+            </label>
+            <label class="radio-option" id="allChildrenSickNo">
+              <input type="radio" name="allChildrenSick" value="no">
+              <span class="radio-circle"></span>
+              No
+            </label>
+          </div>
+        </div>
+        <div class="sub-question">
+          <p>b. If one of the parents is sick, are you sure that at least one of the children is sick?</p>
+          <div class="radio-group">
+            <label class="radio-option" id="oneChildSickYes">
+              <input type="radio" name="oneChildSick" value="yes" required>
+              <span class="radio-circle"></span>
+              Yes
+            </label>
+            <label class="radio-option" id="oneChildSickNo">
+              <input type="radio" name="oneChildSick" value="no">
+              <span class="radio-circle"></span>
+              No
+            </label>
+          </div>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="prev-btn" onclick="prevQuestion(15)">Previous</button>
+          <a href="{% url 'test_complete' %}"><button type="button" class="submit-btn">Finish</button></a>
+        </div>
+      </div>
+    </div>
+  </form>
+  <h6>Please answer the following questions as accurately as possible.</h6>
+</div>
+</div>
+<script src="{% static 'js/hypercholesterolemia.js' %}"></script>
+{% endblock %}

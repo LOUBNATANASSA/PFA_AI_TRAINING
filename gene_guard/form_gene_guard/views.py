@@ -22,6 +22,8 @@ def formulaire_Galactosemia(request):
 def formulaire(request):
     return render(request,'welcome/formulaire.html',{'title':'Formulaire'})
 
+def formulaire(request):
+    return render(request,'welcome/hypercholesterolemia.html',{'title':'Formulaire'})
 
 def resultat(request):
     return render(request,'welcome/resultat.html',{'title':'Resultat'})

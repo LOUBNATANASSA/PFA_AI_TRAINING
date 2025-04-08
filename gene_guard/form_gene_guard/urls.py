@@ -10,6 +10,7 @@ urlpatterns = [
     path('Formulaire/', views.formulaire,name='formulaire'),
     path('Formulaire/Sickle-cell-anemia', views.formulaire_Sickle_cell_anemia,name='formulaire_Sickle_cell_anemia'),
     path('Formulaire/Galactosemia', views.formulaire_Galactosemia,name='formulaire_Galactosemia'),
+    path('Formulaire/hypercholesterolemia', views.formulaire_Galactosemia,name='formulaire_hypercholesterolemia'),
     path('Resultat/', views.resultat,name='resultat'),
     path('ListeMaladie/', views.ListeMaladie,name='ListeMaladie'),
   
