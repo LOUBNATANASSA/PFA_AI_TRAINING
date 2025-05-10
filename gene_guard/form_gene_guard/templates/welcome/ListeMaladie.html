@@ -240,37 +240,37 @@
                 name: "Sickle Cell Anemia",
                 description: "The hemoglobin is abnormal, which causes the red blood cells to become hard and sticky and look like a C-shaped farm tool called a sickle.",
                 formUrl: "{% url 'formulaire_Sickle_cell_anemia' %}",
-                icon: "fas fa-user-md"
+                icon: "{% static 'image/sickle.jpg' %}"
             },
             {
                 name: "Diabetes",
                 description: "Specialized heart health examination including ECG, blood pressure monitoring, and consultation with our cardiology specialists. Recommended for patients with heart conditions or risk factors.",
                 formUrl: "{% url 'formulaire_diabetes' %}",
-                icon: "fas fa-heartbeat"
+                icon: "{% static 'image/diabete.png' %}"
             },
             {
                 name: "Spina bifida",
                 description: "Child-friendly healthcare services for infants, children, and adolescents. Our pediatricians provide growth monitoring, vaccinations, and treatment for common childhood illnesses.",
                 formUrl: "form.html?item=pediatric",
-                icon: "fas fa-baby"
+                icon: "{% static 'image/Spina.png' %}"
             },
             {
                 name: "Cystic fibrosis",
                 description: "Comprehensive blood tests, urinalysis, and other diagnostic procedures performed in our state-of-the-art laboratory facilities. Results typically available within 24-48 hours.",
                 formUrl: "form.html?item=lab-tests",
-                icon: "fas fa-flask"
+                icon: "{% static 'image/Cystic.png' %}"
             },
             {
                 name: "muscular dystrophy",
                 description: "Professional dental care including cleaning, cavity treatment, root canals, and cosmetic procedures. Our experienced dentists use modern equipment to ensure your comfort during treatment.",
                 formUrl: "form.html?item=dental",
-                icon: "fas fa-tooth"
+                icon: "{% static 'image/Muscular.png' %}"
             },
             {
                 name: "Arthritis",
                 description: "Rehabilitation services for patients recovering from injuries or surgeries. Our physiotherapists develop personalized treatment plans to improve mobility, reduce pain, and restore functionality.",
                 formUrl: "form.html?item=physiotherapy",
-                icon: "fas fa-walking"
+                icon: "{% static 'image/Arthritis.png' %}"
             }
         ];
 
@@ -286,8 +286,12 @@
                 itemElement.innerHTML = `
                     <div class="item-header">
                         <div class="item-icon">
-                            <i class="${item.icon}"></i>
-                        </div>
+  ${
+    item.icon.startsWith("http") || item.icon.startsWith("/") || item.icon.includes("static")
+      ? `<img src="${item.icon}" alt="${item.name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`
+      : `<i class="${item.icon}"></i>`
+  }
+</div>
                         <h3 class="item-name">${item.name}</h3>
                         <i class="fas fa-chevron-down toggle-icon"></i>
                     </div>
