@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Risque de Cholesterol</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        #risk-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            display: inline-block;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #risk-result {
+            font-size: 2em;
+            color: #d9534f;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="risk-container">
+        <h1>Résultat du risque de Cholesterol</h1>
+        <div id="hf-risk-result">Chargement...</div>
+    </div>
+    <script>
+        function fetchAndProcessHFData() {
+            let dataDict = {};
+    
+            fetch('/get-cholesterol-results/')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Données reçues:", data);
+    
+                    if (data.responses) {
+                        try {
+                            dataDict = JSON.parse(data.responses);
+                            console.log("Contenu de dataDict après parse:", dataDict);
+    
+                            const risk = processHFData(dataDict);
+                            document.getElementById("hf-risk-result").innerText = `Risque estimé : ${risk}%`;
+                        } catch (error) {
+                            console.error("Erreur de parsing JSON:", error);
+                            document.getElementById("hf-risk-result").innerText = "Erreur de format JSON.";
+                        }
+                    } else {
+                        console.error("Champ 'responses' manquant dans les données.");
+                        document.getElementById("hf-risk-result").innerText = "mazal masalitch traitement";
+                    }
+                })
+                .catch(error => {
+                    console.error("Erreur:", error);
+                    document.getElementById("hf-risk-result").innerText = "Erreur lors de la récupération des données.";
+                });
+        }
+    
+        function processHFData(dataDict) {
+            let risk = 10;
+    
+            // 1. Antécédents familiaux
+            if (dataDict.parentCholesterol === "yes") risk += 15;
+            if (dataDict.familyHF === "yes") risk += 25;
+            if (dataDict.familyHeartDisease === "yes") risk += 10;
+            if (dataDict.suddenDeath === "yes") risk += 5;
+    
+            // 2. Résultats biologiques
+            const ldl = parseFloat(dataDict.ldlCholesterol);
+            if (!isNaN(ldl)) {
+                if (ldl > 190) {
+                    risk += 30;
+                } else if (ldl > 130) {
+                    risk += 20;
+                } else if (ldl > 100) {
+                    risk += 10;
+                }
+            }
+    
+            if (dataDict.diagnosedCholesterol === "yes") risk += 10;
+            if (dataDict.statineTreatment === "yes") risk += 5;
+    
+            // 3. Signes physiques
+            if (dataDict.xanthelasma === "yes") risk += 10;
+            if (dataDict.tendonNodules === "yes") risk += 15;
+            if (dataDict.arcusCorneae === "yes") risk += 5;
+    
+            // 4. Facteurs liés au mode de vie
+            if (dataDict.smoker === "yes") risk += 5;
+            if (dataDict.diabetesOrHypertension === "yes") risk += 5;
+            if (dataDict.imcAbove25 === "yes") risk += 5;
+    
+            // 5. Déjà diagnostiqué
+            if (dataDict.confirmedHF === "yes") {
+                return 95; // Diagnostic confirmé
+            }
+    
+            return risk;
+        }
+    
+        fetchAndProcessHFData();
+    </script>
+    
+
+</body>
+</html>

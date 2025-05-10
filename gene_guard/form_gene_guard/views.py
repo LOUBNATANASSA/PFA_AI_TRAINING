@@ -11,6 +11,9 @@ def test_guidelines(request):
 def test_finish(request):
     return render(request,'welcome/test_finish.html',{'title':'GeneGuard'})
 
+def test_finish1(request):
+    return render(request,'welcome/test_finish1.html',{'title':'GeneGuard'})
+
 
 def formulaire_Sickle_cell_anemia(request):
     return render(request,'welcome/Sickle_cell_anemia_form.html',{'title':'Formulaire'})
@@ -22,11 +25,14 @@ def formulaire_Galactosemia(request):
 def formulaire(request):
     return render(request,'welcome/formulaire.html',{'title':'Formulaire'})
 
-def formulaire(request):
+def formulaire_hypercholesterolemia(request):
     return render(request,'welcome/hypercholesterolemia.html',{'title':'Formulaire'})
 
 def resultat(request):
     return render(request,'welcome/resultat.html',{'title':'Resultat'})
+
+def resultat_hypercholesterolemia(request):
+    return render(request,'welcome/resultat_hypercholesterolemia.html',{'title':'Resultat_hypercholesterolemia'})
 
 def ListeMaladie(request):
     return render(request,'welcome/ListeMaladie.html',{'title':'ListeMaladie'})
@@ -63,3 +69,44 @@ def get_sickle_cell_results(request):
     else:
         # Si aucun résultat n'est trouvé, renvoyer une erreur
         return JsonResponse({"error": "Aucun résultat trouvé."}, status=404)
+
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import CholesterolResult
+
+@csrf_exempt  # Pour autoriser la requête POST
+def Cholesterol_results(request):
+    if request.method == 'POST':
+        try:
+            # Récupérer les données JSON envoyées par le frontend
+            data = json.loads(request.body)
+            responses = data.get('responses', {})
+            
+            # Créer un nouvel objet CholesterolResult avec les réponses
+            result = CholesterolResult(responses=responses)
+            result.save()  # Sauvegarder dans la base de données
+            
+            # Répondre avec un message de succès
+            return JsonResponse({'status': 'success', 'message': 'Résultats enregistrés avec succès'})
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Données invalides'}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Méthode HTTP non autorisée'}, status=405)
+
+
+from django.http import JsonResponse
+from .models import CholesterolResult
+
+def get_cholesterol_results(request):
+    try:
+        # Récupérer tous les résultats de cholestérol dans la base de données
+        results = CholesterolResult.objects.all().values('user_id', 'responses', 'created_at')
+        
+        # Retourner les résultats sous forme de JSON
+        return JsonResponse({'status': 'success', 'results': list(results)}, safe=False)
+    
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+

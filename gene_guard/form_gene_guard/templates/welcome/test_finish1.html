@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/css.css' %}">
+    <!-- Added Google fonts for the new typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    {% if title %}
+    <title>{{title}}</title>
+    {% else %}
+    <title>Gene Guard</title>
+    {% endif %}
+</head>
+<body class="body">
+    <div class="test-container">
+        <div class="test-icon">
+            <img src="" width="150" height="150" alt="Test icon">
+        </div>
+
+        <h1 class="test-title">Test Completed for hypercholesterolemia</h1>
+        
+        <div class="guidelines">
+            <p class="guideline">
+                <span class="check-icon">✔️</span> 
+                You have successfully completed the test!
+            </p>
+            <p class="guideline">
+                <span class="check-icon">📊</span> 
+                Your results are ready.
+            </p>
+        </div> 
+
+        <a href="{% url 'resultat_hypercholesterolemia'%}" class="results-button">Show Results</a> 
+        <a href="" class="edit-results-button">Edit My Answers</a> 
+    </div>
+</body>
+</html>

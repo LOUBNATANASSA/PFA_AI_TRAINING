@@ -1,21 +1,4 @@
-/* General styles */
-/* body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f4f4f4;
-}
-*/
 
-
-
-
-/* Navbar styles */
 .navbar {
     
     position: fixed;
@@ -202,6 +185,7 @@ flex-grow: 1;
 
 /* Conteneur des paragraphes */
 .paragraphes {
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     flex: 1; /* Les paragraphes occupent 1 partie de l'espace disponible */
     max-width: 48%; /* Largeur maximale des paragraphes */
     padding: 20px; /* Espacement interne */
