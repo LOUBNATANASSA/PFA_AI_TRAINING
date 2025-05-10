@@ -115,3 +115,81 @@ def predict_diabetes_result(request):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
     return JsonResponse({"error": "Méthode non autorisée"}, status=405)
+
+
+#wiki 
+def wiki(request):
+    diseases = [
+    {
+        "name": "Sickle Cell Anemia",
+        "description": "A genetic blood disorder that causes red blood cells to become misshapen and break down.",
+        "symptoms": ["Fatigue", "Pain episodes", "Swelling", "Frequent infections"],
+        "causes": "Inherited when both parents carry the sickle cell gene.",
+        "treatment": "Pain management, blood transfusions, bone marrow transplant."
+    },
+    {
+        "name": "Cystic Fibrosis",
+        "description": "A hereditary disease that affects the lungs and digestive system, causing thick mucus buildup.",
+        "symptoms": ["Chronic cough", "Frequent lung infections", "Poor weight gain", "Shortness of breath"],
+        "causes": "Mutation in the CFTR gene.",
+        "treatment": "Chest physiotherapy, enzyme supplements, antibiotics, lung transplant."
+    },
+    {
+        "name": "Hemophilia",
+        "description": "A disorder in which blood doesn’t clot normally due to lack of clotting factors.",
+        "symptoms": ["Prolonged bleeding", "Easy bruising", "Joint pain"],
+        "causes": "X-linked recessive gene mutation (mostly affects males).",
+        "treatment": "Clotting factor replacement therapy."
+    },
+    {
+        "name": "Huntington’s Disease",
+        "description": "A progressive brain disorder that causes uncontrolled movements and cognitive decline.",
+        "symptoms": ["Involuntary movements", "Mood changes", "Memory loss", "Difficulty speaking"],
+        "causes": "Mutation in the HTT gene.",
+        "treatment": "No cure, but medications and therapy can help manage symptoms."
+    },
+    {
+        "name": "Tay-Sachs Disease",
+        "description": "A rare genetic disorder that destroys nerve cells in the brain and spinal cord.",
+        "symptoms": ["Loss of motor skills", "Seizures", "Vision and hearing loss"],
+        "causes": "Mutation in the HEXA gene, common in Ashkenazi Jewish populations.",
+        "treatment": "No cure, supportive care only."
+    },
+    {
+        "name": "Thalassemia",
+        "description": "A blood disorder involving less than normal amounts of an oxygen-carrying protein.",
+        "symptoms": ["Fatigue", "Pale skin", "Delayed growth", "Enlarged spleen"],
+        "causes": "Mutations in genes involved in hemoglobin production.",
+        "treatment": "Regular blood transfusions, iron chelation therapy."
+    },
+    {
+        "name": "Familial Hypercholesterolemia",
+        "description": "An inherited condition causing very high cholesterol levels and early heart disease.",
+        "symptoms": ["High LDL cholesterol", "Chest pain", "Xanthomas (fatty skin deposits)"],
+        "causes": "Mutation in LDL receptor gene.",
+        "treatment": "Statins, lifestyle changes, sometimes LDL apheresis."
+    },
+    {
+        "name": "Albinism",
+        "description": "A group of inherited disorders that reduce the amount of melanin in the skin, hair, and eyes.",
+        "symptoms": ["Very light skin and hair", "Vision problems", "Increased sun sensitivity"],
+        "causes": "Mutations in genes involved in melanin production.",
+        "treatment": "Sun protection, vision support, regular skin monitoring."
+    },
+    {
+        "name": "Polycystic Kidney Disease (PKD)",
+        "description": "A genetic disorder that causes many cysts to grow in the kidneys.",
+        "symptoms": ["Back or side pain", "High blood pressure", "Kidney failure"],
+        "causes": "Mutations in PKD1 or PKD2 genes.",
+        "treatment": "Blood pressure control, dialysis, kidney transplant."
+    },
+    {
+        "name": "Marfan Syndrome",
+        "description": "A genetic disorder that affects connective tissue, often impacting the heart, eyes, and skeleton.",
+        "symptoms": ["Tall stature", "Long limbs", "Heart valve issues", "Flexible joints"],
+        "causes": "Mutation in FBN1 gene (fibrillin-1).",
+        "treatment": "Monitoring of heart/aorta, beta-blockers, surgery if needed."
+    },
+]
+
+    return render(request, 'welcome/wiki.html', {'diseases': diseases})
