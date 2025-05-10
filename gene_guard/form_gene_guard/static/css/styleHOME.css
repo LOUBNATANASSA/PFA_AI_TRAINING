@@ -407,4 +407,121 @@ flex-grow: 1;
       transform: rotate(360deg);
     }
   }
-  
+  body {
+    font-family: sans-serif;
+    background: #e0f2f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-box {
+    background: white;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px #999;
+    width: 100%;
+    max-width: 400px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background: #26a69a;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+}
+
+:root {
+    --green-light: #C8E6C9;   /* fond très clair */
+    --green:        #4CAF50;  /* couleur principale */
+    --green-dark:   #388E3C;  /* hover / titres */
+    --green-muted:  #2E7D32;  /* texte foncé */
+}
+
+/* Carte principale ------------------------------------------------------- */
+.test-container{
+    width: 420px;
+    margin: 40px auto;
+    padding: 32px 40px;
+    background: var(--green-light);
+    border: 2px solid var(--green);
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    text-align: center;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Icône au-dessus du titre ---------------------------------------------- */
+.test-icon img{
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+    /* teinte l’icône importée dans les tons verts sans avoir besoin d’un SVG */
+    filter: hue-rotate(90deg) saturate(120%);
+    margin-bottom: 8px;
+}
+
+/* Titre ------------------------------------------------------------------ */
+.test-title{
+    color: var(--green-dark);
+    font-size: 2rem;
+    margin: 0.2em 0 0.8em;
+}
+
+/* Texte des consignes ---------------------------------------------------- */
+.guidelines{
+    margin-bottom: 1.4em;
+}
+.guideline{
+    color: var(--green-muted);
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;           /* espace entre l’emoji et le texte */
+    margin: 6px 0;
+}
+.check-icon{
+    font-size: 1.2rem;
+}
+
+/* Boutons / liens -------------------------------------------------------- */
+.results-button,
+.edit-results-button{
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 0 6px;
+    border-radius: 6px;
+    background: var(--green);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.25s ease;
+}
+.edit-results-button{           /* second bouton un peu plus clair */
+    background: #66BB6A;
+}
+
+.results-button:hover,
+.edit-results-button:hover{
+    background: var(--green-dark);
+}

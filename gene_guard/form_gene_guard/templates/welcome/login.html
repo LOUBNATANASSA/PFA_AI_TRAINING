@@ -1,0 +1,20 @@
+{% extends 'welcome/base.html'%}
+{% load static%}
+{% block content%}
+<div class="login-card">
+    <h2 class="title">Connexion</h2>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Nom d'utilisateur" required>
+        <input type="password" name="password" placeholder="Mot de passe" required>
+        <button type="submit">Se connecter</button>
+    </form>
+
+    <p class="register-link">Pas encore de compte ? <a href="{% url 'register' %}">Créer un compte</a></p>
+</div>
+{% endblock %}

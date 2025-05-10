@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="{% static 'css/form.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/styleHOME.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+   
     {% if title %}
     <title>{{title}}</title>
     {% else %}
@@ -23,9 +25,19 @@
         </div>
         <ul class="nav navbar-nav">
             <li><a href="{% url 'home' %}">Home</a></li>
+
             <li><a href="{% url 'ListeMaladie' %}">Formulaire</a></li>
+
             <li><a href="{% url 'ListeMaladie' %}">Resultat</a></li>
-            <li><a href="{% url 'resultat' %}">se connecter</a></li>
+            
+            {% if user.is_authenticated %}
+            
+            <li><a href="{% url 'historique' %}">historique results</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        {% else %}
+            <li><a href="{% url 'register' %}">Register</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
+        {% endif %}
         </ul>
     </div>
 </nav>
@@ -33,8 +45,8 @@
         {% block content%}
         {% endblock content%}
       </div>
-
-      <footer>
+      
+     <footer>
         <div class="footer-content">
             <div class="footer-section">
                 <h4>Produits</h4>
@@ -79,6 +91,7 @@
             <p><a href="#">Conditions Générales</a> | <a href="#">Politique de Confidentialité</a></p>
         </div>
       </footer>
+      
     </body>
    
 </html>
