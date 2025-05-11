@@ -29,7 +29,7 @@
             <li><a href="{% url 'ListeMaladie' %}">Formulaire</a></li>
 
             <li><a href="{% url 'ListeMaladie' %}">Resultat</a></li>
-            
+            <li><a href="{% url 'wiki' %}">Wiki</a></li>
             {% if user.is_authenticated %}
             
             <li><a href="{% url 'historique' %}">historique results</a></li>
@@ -91,7 +91,7 @@
             <p><a href="#">Conditions Générales</a> | <a href="#">Politique de Confidentialité</a></p>
         </div>
       </footer>
-      
+
     </body>
    
 </html>

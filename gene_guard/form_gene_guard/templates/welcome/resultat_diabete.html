@@ -1,0 +1,111 @@
+{% extends 'welcome/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+.dashboard-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.1);
+}
+
+.card {
+  background-color: #b2ebf2;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  max-width: 300px;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  margin: auto;
+}
+
+.gauge {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: conic-gradient(#4caf50 {{ pourcentage }}%, #eeeeee 0%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-top: 10px;
+}
+
+.gauge-text {
+  position: absolute;
+  font-weight: bold;
+  font-size: 22px;
+  color: #000;
+}
+
+.gauge-wrapper {
+  margin-top: 20px;
+}
+
+.gauge-fill {
+  background: #4caf50;
+  height: 100%;
+  transition: width 0.5s;
+}
+
+.advice-box, .info-box {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.retake-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+</style>
+
+<div class="dashboard-container">
+  <h2>🩺 Your Diabetes Risk Assessment Result</h2>
+
+  <div class="card">
+    <h3>{{ conseil }}</h3>
+    <p>Estimated Probability:</p>
+    <div class="gauge" style="background: conic-gradient(#4caf50 {{ pourcentage }}%, #f1f1f1 0%)">
+      <span class="gauge-text">{{ pourcentage }}%</span>
+    </div>
+  </div>
+
+  <div class="advice-box">
+    <h4>📝 Personalized Recommendations:</h4>
+    <ul>
+      {% if pourcentage >= 50 %}
+        <li>Consult a doctor for a blood sugar test.</li>
+        <li>Adopt a balanced diet low in fast sugars.</li>
+        <li>Engage in at least 30 minutes of physical activity per day.</li>
+      {% else %}
+        <li>Maintain a healthy and balanced diet.</li>
+        <li>Keep up regular physical activity.</li>
+        <li>Get routine checkups every 6 months.</li>
+      {% endif %}
+    </ul>
+  </div>
+
+  <div class="info-box">
+    <h4>ℹ️ About Diabetes:</h4>
+    <p>Diabetes is a chronic condition that affects how your body regulates blood sugar. There are several types, including type 1 (autoimmune) and type 2 (related to lifestyle).</p>
+    <p>Early diagnosis is key to preventing serious complications.</p>
+  </div>
+
+  <a href="/Formulaire/diabetes/"><button class="retake-btn">🔄 Retake the Test</button></a>
+</div>
+{% endblock %}

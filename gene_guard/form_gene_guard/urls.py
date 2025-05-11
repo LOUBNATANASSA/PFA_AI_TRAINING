@@ -21,7 +21,10 @@ urlpatterns = [
 
     path('get-sickle-cell-results/', views.get_sickle_cell_results, name='get_sickle_cell_results'),
 
-
+    path('Formulaire/diabetes/', views.formulaire_diabetes, name='formulaire_diabetes'),
+    path('predict-diabetes/', views.predict_diabetes_result, name='predict_diabetes_result'),
+    path('Resultat/diabete/', views.resultat_diabete, name='resultat_diabete'),
+    path('wiki/', views.wiki, name='wiki'),
 
     
 
