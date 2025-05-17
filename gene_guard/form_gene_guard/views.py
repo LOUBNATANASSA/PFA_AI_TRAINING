@@ -4,8 +4,7 @@ import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-import joblib
-import numpy as np
+
 # Create your views here.
 def home(request):
     

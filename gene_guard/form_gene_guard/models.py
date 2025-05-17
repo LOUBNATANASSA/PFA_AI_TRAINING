@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
     age = models.PositiveIntegerField()
     weight = models.FloatField()
     height = models.FloatField()
@@ -18,6 +18,7 @@ from django.db import models
 
 class CholesterolResult(models.Model):
     user_id = models.AutoField(primary_key=True)
+    user_profile_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True)
     responses = models.JSONField()  # Stocke les réponses en tant que dictionnaire JSON
     created_at = models.DateTimeField(auto_now_add=True)  # Date d'enregistrement
 
@@ -30,6 +31,7 @@ class SickleCellResult(models.Model):
     # ► choix 1 : référence directe (UserProfile est déjà défini plus haut)
     user_profile = models.ForeignKey(
         UserProfile,
+        null=True,
         on_delete=models.CASCADE,
         related_name="sickle_results"
     )
