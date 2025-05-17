@@ -31,5 +31,6 @@ urlpatterns = [
     path('predict-diabetes/', views.predict_diabetes_result, name='predict_diabetes_result'),
     path('Resultat/diabete/', views.resultat_diabete, name='resultat_diabete'),
     path('wiki/', views.wiki, name='wiki'),
+    
 
 ]

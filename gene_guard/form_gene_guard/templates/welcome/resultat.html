@@ -2,56 +2,236 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Risque de Drépanocytose</title>
+    <title>Évaluation Drépanocytose</title>
     <style>
+        :root {
+            --medical-blue: #0077b6;
+            --medical-red: #d90429;
+            --medical-green: #2b9348;
+            --medical-light: #f8f9fa;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            padding: 40px;
-            background-color: #f4f4f4;
-            text-align: center;
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
         }
 
-        #risk-container {
-            background-color: #ffffff;
+        .medical-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 119, 182, 0.1);
+            width: 100%;
+            max-width: 800px;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            border-top: 8px solid var(--medical-blue);
         }
 
-        h1 {
-            color: #333;
+        .medical-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 120px;
+            height: 120px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%230077b6" opacity="0.1"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L20 9v6l-8 4-8-4V9l8-4.2zM12 16l-4-2v-4l4 2 4-2v4l-4 2z"/></svg>');
+            background-size: contain;
         }
 
-        #risk-result {
-            font-size: 2em;
-            color: #d9534f;
-            margin-top: 20px;
+        .medical-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .medical-icon {
+            width: 50px;
+            height: 50px;
+            background-color: var(--medical-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 24px;
+        }
+
+        .risk-gauge {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--medical-red) 0% 30%, 
+                #ffba08 30% 70%, 
+                var(--medical-green) 70% 100%
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 20px auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 8px solid white;
+        }
+
+        .risk-gauge::after {
+            content: "";
+            position: absolute;
+            width: 85%;
+            height: 85%;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .risk-value {
+            position: relative;
+            z-index: 2;
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--medical-blue);
+        }
+
+        .sticker {
+            position: absolute;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            transform: rotate(-5deg);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+
+        .sticker-high {
+            background-color: var(--medical-red);
+            color: white;
+            top: 20px;
+            right: 20px;
+        }
+
+        .sticker-info {
+            background-color: var(--medical-blue);
+            color: white;
+            bottom: 20px;
+            left: 20px;
+        }
+
+        .advice-section {
+            background: var(--medical-light);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            border-left: 5px solid var(--medical-blue);
+        }
+
+        .advice-section h3 {
+            color: var(--medical-blue);
+            display: flex;
+            align-items: center;
+        }
+
+        .advice-section h3::before {
+            content: "📌";
+            margin-right: 10px;
+        }
+
+        .retake-btn {
+            background: linear-gradient(to right, var(--medical-blue), #00b4d8);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 30px auto 0;
+            box-shadow: 0 4px 10px rgba(0, 119, 182, 0.3);
+            transition: all 0.3s;
+        }
+
+        .retake-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 119, 182, 0.4);
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        li::before {
+            content: "🩺";
+            position: absolute;
+            left: 0;
         }
     </style>
 </head>
 <body>
 
-    <div id="risk-container">
-        <h1>Résultat du risque de drépanocytose</h1>
-        <div id="risk-result">Chargement...</div>
+    <div class="medical-card">
+        <div class="sticker sticker-high">RISQUE</div>
+        <div class="sticker sticker-info">DRÉPANOCYTOSE</div>
+
+        <div class="medical-header">
+            <div class="medical-icon">🩺</div>
+            <h1>Évaluation du Risque de Drépanocytose</h1>
+        </div>
+
+        <div style="text-align: center;">
+            <h2 id="risk-title">Analyse en cours...</h2>
+            <p>Probabilité estimée</p>
+            
+            <div class="risk-gauge">
+                <div class="risk-value" id="risk-percentage">0%</div>
+            </div>
+            
+            <div id="risk-level" style="font-weight: bold; color: var(--medical-blue);"></div>
+        </div>
+
+        <div class="advice-section">
+            <h3>Recommandations médicales</h3>
+            <ul id="advice-list">
+                <li>Calcul des recommandations en cours...</li>
+            </ul>
+        </div>
+
+<button class="retake-btn" onclick="window.location.href='{% url 'formulaire_Sickle_cell_anemia' %}'">
+  🔄 Nouvelle Évaluation
+</button>
+<button class="retake-btn" onclick="window.location.href='{% url 'home' %}'">
+  🏠 Retour à la page principale
+</button>
+
     </div>
 
     <script>
+        // [VOTRE SCRIPT ORIGINAL EST MAINTENU INTACT CI-DESSOUS]
         function fetchAndProcessData() {
-            
             let dataDict = {};
-
+            
             fetch('/get-sickle-cell-results/')
                 .then(response => response.json())
                 .then(data => {
                     dataDict = { ...data };
                     const risk = processData(dataDict);
-                    document.getElementById("risk-result").innerText = `Risque estimé : ${risk}%`;
+                    updateRiskDisplay(risk);
                 })
                 .catch(error => {
                     console.error("Erreur:", error);
-                    document.getElementById("risk-result").innerText = "Erreur lors de la récupération des données.";
+                    document.getElementById("risk-percentage").innerText = "Erreur";
+                    document.getElementById("risk-title").innerText = "Erreur de chargement";
                 });
         }
 
@@ -106,6 +286,46 @@
             if (dataDict.diagnosed === "yes") return 78;
 
             return Math.min(Math.max(risk, 0), 100);
+        }
+
+        function updateRiskDisplay(risk) {
+            const percentageElement = document.getElementById("risk-percentage");
+            const titleElement = document.getElementById("risk-title");
+            const levelElement = document.getElementById("risk-level");
+            const adviceList = document.getElementById("advice-list");
+
+            percentageElement.innerText = `${risk}%`;
+            
+            if (risk >= 70) {
+                titleElement.innerText = "Risque Élevé";
+                levelElement.innerText = "Niveau de risque: Élevé";
+                levelElement.style.color = "var(--medical-red)";
+                adviceList.innerHTML = `
+                    <li>Consultation hématologique urgente recommandée</li>
+                    <li>Tests complémentaires nécessaires (électrophorèse Hb)</li>
+                    <li>Surveillance accrue des symptômes</li>
+                    <li>Éducation thérapeutique indispensable</li>
+                `;
+            } else if (risk >= 30) {
+                titleElement.innerText = "Risque Modéré";
+                levelElement.innerText = "Niveau de risque: Modéré";
+                levelElement.style.color = "#ffba08";
+                adviceList.innerHTML = `
+                    <li>Consultation médicale conseillée</li>
+                    <li>Bilan hématologique à envisager</li>
+                    <li>Surveillance des symptômes</li>
+                    <li>Conseils préventifs à appliquer</li>
+                `;
+            } else {
+                titleElement.innerText = "Risque Faible";
+                levelElement.innerText = "Niveau de risque: Faible";
+                levelElement.style.color = "var(--medical-green)";
+                adviceList.innerHTML = `
+                    <li>Maintenir une surveillance standard</li>
+                    <li>Consulter en cas d'apparition de symptômes</li>
+                    <li>Connaître ses antécédents familiaux</li>
+                `;
+            }
         }
 
         // Lancer au chargement de la page

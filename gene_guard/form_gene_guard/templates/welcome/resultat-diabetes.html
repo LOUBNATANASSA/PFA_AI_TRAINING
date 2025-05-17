@@ -1,118 +1,116 @@
-{% extends 'welcome/base.html' %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Risque de Drépanocytose</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
 
-{% block content %}
-<div class="bodyform">
-  <div class="assessment-container">
-    <h2>Évaluation du Risque de Diabète</h2>
-    
-    <div class="progress-container">
-      <div class="progress-line">
-        <div class="progress-fill" id="progressFill"></div>
-        <div class="progress-circles">
-          {% for i in "12345678" %}
-            <div class="progress-circle {% if forloop.first %}active{% endif %}" id="circle{{ i }}">{{ i }}</div>
-          {% endfor %}
-        </div>
-      </div>
+        #risk-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            display: inline-block;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #risk-result {
+            font-size: 2em;
+            color: #d9534f;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="risk-container">
+        <h1>Résultat du risque de drépanocytose</h1>
+        <div id="risk-result">Chargement...</div>
     </div>
 
-   <form id="DiabetesForm">
-  <div class="question-container">
+    <script>
+        function fetchAndProcessData() {
+            
+            let dataDict = {};
 
-    <div class="question active" id="q1">
-      <label>1. How many pregnancies have you had (even if not carried to term)?</label>
-      <input type="number" name="Pregnancies" required placeholder="e.g. 2">
-      <div class="btn-group">
-        <div></div>
-        <button type="button" class="next-btn" onclick="nextQuestion(1)">Next</button>
-      </div>
-    </div>
+            fetch('/get-sickle-cell-results/')
+                .then(response => response.json())
+                .then(data => {
+                    dataDict = { ...data };
+                    const risk = processData(dataDict);
+                    document.getElementById("risk-result").innerText = `Risque estimé : ${risk}%`;
+                })
+                .catch(error => {
+                    console.error("Erreur:", error);
+                    document.getElementById("risk-result").innerText = "Erreur lors de la récupération des données.";
+                });
+        }
 
-    <div class="question" id="q2">
-     <label>2. Do you know your fasting blood sugar level (in mg/dL)?</label>
-<input type="number" name="Glucose" required placeholder="e.g. 100">
-      <div class="btn-group">
-        <button type="button" class="prev-btn" onclick="prevQuestion(2)">Previous</button>
-        <button type="button" class="next-btn" onclick="nextQuestion(2)">Next</button>
-      </div>
-    </div>
+        function processData(dataDict) {
+            let risk = 0;
 
-    <div class="question" id="q3">
-      <label>3. What is your diastolic blood pressure (the lower number)?</label>
-<input type="number" name="BloodPressure" required placeholder="e.g. 70">
-      <div class="btn-group">
-        <button type="button" class="prev-btn" onclick="prevQuestion(3)">Previous</button>
-        <button type="button" class="next-btn" onclick="nextQuestion(3)">Next</button>
-      </div>
-    </div>
+            if (dataDict.bothparents === "yes") risk += 35;
+            if (dataDict.familyHistory === "yes") risk += 10;
 
-    <div class="question" id="q4">
-     <label>4. Do you know the thickness of your skin fold (in mm)?</label>
-<input type="number" name="SkinThickness" required placeholder="e.g. 20">
+            if (dataDict.testResult) {
+                switch(dataDict.testResult) {
+                    case "HbSS":
+                        return 81;
+                    case "HbAS":
+                        risk += 10;
+                        break;
+                    case "HbA":
+                        risk += 0;
+                        break;
+                    default:
+                        risk += 20;
+                }
+            }
 
-      <div class="btn-group">
-        <button type="button" class="prev-btn" onclick="prevQuestion(4)">Previous</button>
-        <button type="button" class="next-btn" onclick="nextQuestion(4)">Next</button>
-      </div>
-    </div>
+            if (dataDict.sickle === "yes" && !dataDict.testResult) {
+                return 100;
+            }
 
-    <div class="question" id="q5">
-      <label>5. Do you know your insulin level (µU/mL)?</label>
-<input type="number" name="Insulin" required placeholder="e.g. 85">
+            const symptoms = [
+                "FrequentPain",
+                "abdominalPain",
+                "yellow",
+                "bloodTransfusion"
+            ];
 
-      <div class="btn-group">
-        <button type="button" class="prev-btn" onclick="prevQuestion(5)">Previous</button>
-        <button type="button" class="next-btn" onclick="nextQuestion(5)">Next</button>
-      </div>
-    </div>
+            let symptomCount = 0;
+            symptoms.forEach(symptom => {
+                if (dataDict[symptom] === "yes") {
+                    symptomCount++;
+                }
+            });
 
-    <div class="question" id="q6">
-      <label>6. What is your Body Mass Index (BMI)?</label>
-<input type="number" step="0.1" name="BMI" required placeholder="e.g. 25.3">
+            risk += symptomCount * 8;
 
-      <div class="btn-group">
-        <button type="button" class="prev-btn" onclick="prevQuestion(6)">Previous</button>
-        <button type="button" class="next-btn" onclick="nextQuestion(6)">Next</button>
-      </div>
-    </div>
+            const highRiskGroups = ["Africain", "Méditerranéen", "Antillais"];
+            if (highRiskGroups.includes(dataDict.ethnicGroup)) risk += 10;
 
-    <div class="question" id="q7">
-     <label>7. Do you have a family history of diabetes?</label>
-<select name="DiabetesPedigreeFunction" required>
-  <option value="" disabled selected>Select an option</option>
-  <option value="0.1">No</option>
-  <option value="0.3">Yes, one family member</option>
-  <option value="0.5">Yes, multiple family members</option>
-</select>
+            if (dataDict.history === "yes") risk += 15;
+            if (dataDict.diet === "yes") risk += 5;
+            if (dataDict.smoking === "yes") risk += 5;
 
-      <div class="btn-group">
-        <button type="button" class="prev-btn" onclick="prevQuestion(7)">Previous</button>
-        <button type="button" class="next-btn" onclick="nextQuestion(7)">Next</button>
-      </div>
-    </div>
+            if (dataDict.diagnosed === "yes") return 78;
 
-    <div class="question" id="q8">
-      <label>8. What is your age?</label>
-<input type="number" name="Age" required placeholder="e.g. 45">
-      <div class="btn-group">
-        <button type="button" class="prev-btn" onclick="prevQuestion(8)">Previous</button>
-        <button type="button" class="submit-btn" onclick="submitDiabetesForm()">Submit</button>
-      </div>
-    </div>
+            return Math.min(Math.max(risk, 0), 100);
+        }
 
-  </div>
-</form>
+        // Lancer au chargement de la page
+        fetchAndProcessData();
+    </script>
 
-
-    <div id="resultDisplay" class="result-message hidden"></div>
-    <div id="loadingIndicator" class="hidden">
-  <p>Analyse en cours...</p>
-  <div class="loader"></div>
-</div>
-    <h6>Veuillez répondre honnêtement pour une évaluation fiable.</h6>
-  </div>
-</div>
-
-<script src="{% static 'js/diabetes_form.js' %}"></script>
-{% endblock %}
+</body>
+</html>
