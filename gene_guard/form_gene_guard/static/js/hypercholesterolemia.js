@@ -47,7 +47,7 @@ function validateQuestion(questionElement) {
       } else {
         answer = radioGroup[0].value; // Store the selected answer
         answers[name] = answer; // Store answer in the dictionary
-        console.log(`Réponse enregistrée pour ${name}: ${answer}`); // Log the answer
+         // Log the answer
       }
     } else if (input.type === 'text' || input.type === 'select-one') {
       if (!input.value) {
@@ -55,7 +55,7 @@ function validateQuestion(questionElement) {
       } else {
         answer = input.value; // Store the input value
         answers[input.name] = answer; // Store answer in the dictionary
-        console.log(`Réponse enregistrée pour ${input.name}: ${answer}`); // Log the answer
+         // Log the answer
       }
     }
   });
@@ -161,8 +161,8 @@ document.addEventListener('DOMContentLoaded', function() {
         showErrorMessage();
       } else {
         // If valid, log all answers
-        console.log('Toutes les réponses:', answers);
-        alert(JSON.stringify(answers, null, 2)); // Display the collected answers
+        
+         // Display the collected answers
       }
     });
   }
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showErrorMessage();
       } else {
         // If valid, log all answers
-        console.log('Toutes les réponses:', answers);
+        
         
         // Envoi des réponses au backend Django
         fetch('/Cholesterol-results/', {
@@ -199,8 +199,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
           // Afficher le message de succès
-          console.log('Réponse reçue du backend:', data);
-          alert('Réponses enregistrées avec succès');
+          
+          
           console.log('Tentative de redirection vers la nouvelle page');
           window.location = "/Formulaire/complete_hypercholesterolemia/"; // Remplacez ce lien par l'URL de la page vers laquelle vous voulez rediriger
 

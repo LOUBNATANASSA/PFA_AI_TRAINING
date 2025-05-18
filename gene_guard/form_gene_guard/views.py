@@ -117,20 +117,19 @@ def Cholesterol_results(request):
     return JsonResponse({'status': 'error', 'message': 'Méthode HTTP non autorisée'}, status=405)
 
 
+
+
 from django.http import JsonResponse
 from .models import CholesterolResult
 
 def get_cholesterol_results(request):
+    if request.method != "GET":
+        return JsonResponse({'status': 'error', 'message': 'Méthode non autorisée'}, status=405)
     try:
-        # Récupérer tous les résultats de cholestérol dans la base de données
         results = CholesterolResult.objects.all().values('user_id', 'responses', 'created_at')
-        
-        # Retourner les résultats sous forme de JSON
-        return JsonResponse({'status': 'success', 'results': list(results)}, safe=False)
-    
+        return JsonResponse({'status': 'success', 'results': list(results)})
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-
 # views.py
 from django.contrib.auth import  login
 from django.shortcuts import render, redirect

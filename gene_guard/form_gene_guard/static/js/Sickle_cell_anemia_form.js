@@ -91,7 +91,7 @@ function nextQuestion(current) {
     currentQuestion = nextQuestionNumber;
     updateProgress(currentQuestion);
   }
-  console.log(userResponses);
+  
 }
 
 
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
 updateProgress(1);
 
 function saveUserResponse(questionNumber) {
-  console.log("saveuserresponses appelée"); 
+  
   const questionElement = document.getElementById('question' + questionNumber);
   const inputs = questionElement.querySelectorAll('input, select');
   
@@ -190,12 +190,11 @@ function saveUserResponse(questionNumber) {
     }
   });
 
-  console.log(userResponses); // Vérification des réponses en console
+   // Vérification des réponses en console
 }
 
 function submitResponses() {
-  console.log("submitResponses appelée");
-  console.log("userResponses avant envoi:", userResponses); 
+ 
   saveUserResponse(15);
   fetch('/save-result/', {  // URL définie dans urls.py
       method: 'POST',
@@ -206,16 +205,7 @@ function submitResponses() {
       body: JSON.stringify(userResponses)  // Envoi des réponses
   })
   .then(response => response.json())
-  .then(data => {
-      console.log(data);
-      if (data.message) {
-          alert("Données enregistrées avec succès ! ID: " + data.id);
-          window.location.href = "/Formulaire/complete/";  // Redirection après soumission
-      } else {
-          alert("Erreur lors de l'enregistrement : " + data.error);
-      }
-  })
-  .catch(error => console.error("Erreur:", error));
+  
 }
 
 // Fonction pour récupérer le token CSRF
