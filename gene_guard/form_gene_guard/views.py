@@ -382,3 +382,109 @@ def prediction_view(request):
         'resultat': resultat,
         'proba': proba_display
     })
+
+
+# ===== GENERAL DISEASE PREDICTION FROM SYMPTOMS =====
+import numpy as np
+
+# Load symptom prediction model
+symptom_model_dir = os.path.join(current_dir, 'ml_model')
+try:
+    symptom_model = joblib.load(os.path.join(symptom_model_dir, 'symptom_model.pkl'))
+    label_encoder = joblib.load(os.path.join(symptom_model_dir, 'label_encoder.pkl'))
+    symptom_list = joblib.load(os.path.join(symptom_model_dir, 'symptom_list.pkl'))
+    precautions_dict = joblib.load(os.path.join(symptom_model_dir, 'precautions.pkl'))
+    print("Symptom prediction model loaded successfully.")
+except FileNotFoundError as e:
+    symptom_model = None
+    label_encoder = None
+    symptom_list = []
+    precautions_dict = {}
+    print(f"ERROR: Could not load symptom model: {e}")
+
+
+def general_test_view(request):
+    """Display the symptom selection form."""
+    # Format symptoms for display (replace underscores with spaces, capitalize)
+    formatted_symptoms = []
+    for symptom in symptom_list:
+        display_name = symptom.replace('_', ' ').strip().title()
+        formatted_symptoms.append({
+            'value': symptom,
+            'display': display_name
+        })
+    
+    return render(request, 'welcome/general_test.html', {
+        'title': 'General Health Test',
+        'symptoms': formatted_symptoms,
+        'total_symptoms': len(symptom_list)
+    })
+
+
+@csrf_exempt
+def predict_disease(request):
+    """Predict disease based on selected symptoms."""
+    if request.method != 'POST':
+        return redirect('general_test')
+    
+    # Get selected symptoms from form
+    selected_symptoms = request.POST.getlist('symptoms')
+    
+    if not selected_symptoms:
+        return render(request, 'welcome/general_test.html', {
+            'title': 'General Health Test',
+            'symptoms': [{'value': s, 'display': s.replace('_', ' ').strip().title()} for s in symptom_list],
+            'total_symptoms': len(symptom_list),
+            'error': 'Please select at least one symptom.'
+        })
+    
+    if symptom_model is None:
+        return render(request, 'welcome/disease_result.html', {
+            'title': 'Prediction Error',
+            'error': 'Model not loaded. Please try again later.'
+        })
+    
+    # Create feature vector
+    symptom_to_idx = {symptom: idx for idx, symptom in enumerate(symptom_list)}
+    feature_vector = np.zeros(len(symptom_list), dtype=int)
+    
+    for symptom in selected_symptoms:
+        symptom = symptom.strip()
+        if symptom in symptom_to_idx:
+            feature_vector[symptom_to_idx[symptom]] = 1
+    
+    # Get prediction probabilities
+    probabilities = symptom_model.predict_proba([feature_vector])[0]
+    
+    # Get top 5 predictions
+    top_indices = np.argsort(probabilities)[-5:][::-1]
+    
+    predictions = []
+    for idx in top_indices:
+        disease = label_encoder.inverse_transform([idx])[0]
+        prob = probabilities[idx] * 100
+        
+        # Get precautions for this disease
+        precs = precautions_dict.get(disease, [])
+        if not precs:
+            # Try matching with slightly different names
+            for key in precautions_dict.keys():
+                if key.lower().strip() == disease.lower().strip():
+                    precs = precautions_dict[key]
+                    break
+        
+        predictions.append({
+            'disease': disease,
+            'probability': round(prob, 2),
+            'precautions': precs
+        })
+    
+    # Format selected symptoms for display
+    selected_display = [s.replace('_', ' ').strip().title() for s in selected_symptoms]
+    
+    return render(request, 'welcome/disease_result.html', {
+        'title': 'Disease Prediction Results',
+        'predictions': predictions,
+        'selected_symptoms': selected_display,
+        'symptom_count': len(selected_symptoms)
+    })

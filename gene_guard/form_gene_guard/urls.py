@@ -32,6 +32,8 @@ urlpatterns = [
     path('Resultat/diabete/', views.resultat_diabete, name='resultat_diabete'),
     path('wiki/', views.wiki, name='wiki'),
     path('prediction/', views.prediction_view, name='prediction'),
+    path('general-test/', views.general_test_view, name='general_test'),
+    path('predict-disease/', views.predict_disease, name='predict_disease'),
     
 
 ]
