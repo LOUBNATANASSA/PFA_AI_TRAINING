@@ -314,3 +314,71 @@ def wiki(request):
 ]
 
     return render(request, 'welcome/wiki.html', {'diseases': diseases})
+
+# la maladie stroke
+import os
+import joblib
+import pandas as pd
+from django.shortcuts import render
+from .forms import StrokeForm  # On importe notre nouveau formulaire
+
+# --- Chargement du modèle ---
+current_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(current_dir, 'ml_model', 'stroke_model.pkl')
+
+try:
+    model = joblib.load(model_path)
+    print("Modèle IA chargé.")
+except FileNotFoundError:
+    model = None
+    print("ERREUR : Modèle IA introuvable.")
+
+def prediction_view(request):
+    resultat = None
+    proba_display = None
+
+    # Si l'utilisateur envoie le formulaire
+    if request.method == 'POST':
+        # Django remplit le formulaire avec les données reçues
+        form = StrokeForm(request.POST)
+        
+        # Django vérifie si tout est correct (chiffres valides, etc.)
+        if form.is_valid():
+            # On récupère les données "propres" (nettoyées)
+            data = form.cleaned_data
+            
+            # On prépare le DataFrame pour l'IA
+            # Note : form.cleaned_data convertit déjà '0' en entier 0 si besoin
+            input_df = pd.DataFrame([{
+                'gender': data['gender'],
+                'age': data['age'],
+                'hypertension': int(data['hypertension']), # Sécurité pour forcer l'entier
+                'heart_disease': int(data['heart_disease']),
+                'ever_married': data['ever_married'],
+                'work_type': data['work_type'],
+                'Residence_type': data['Residence_type'],
+                'avg_glucose_level': data['avg_glucose_level'],
+                'bmi': data['bmi'],
+                'smoking_status': data['smoking_status']
+            }])
+
+            if model:
+                # Prédiction
+                prediction = model.predict(input_df)[0]
+                proba = model.predict_proba(input_df)[0][1]
+                
+                # Affichage
+                proba_display = round(proba * 100, 2)
+                if prediction == 1:
+                    resultat = "RISQUE ÉLEVÉ"
+                else:
+                    resultat = "Faible Risque"
+    else:
+        # Si on arrive sur la page, on affiche un formulaire vide
+        form = StrokeForm()
+
+    return render(request, 'welcome/predict.html', {
+        'form': form,
+        'resultat': resultat,
+        'proba': proba_display
+    })

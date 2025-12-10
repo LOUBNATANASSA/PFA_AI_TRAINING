@@ -1,6 +1,7 @@
 {% load static%}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,90 +9,83 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/styleHOME.css' %}">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
-   
+
     {% if title %}
     <title>{{title}}</title>
     {% else %}
     <title>Gene Guard </title>
     {% endif %}
 </head>
+
 <body>
-  <nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="{% url 'home' %}">
-                <img src="{% static 'image/logo1.jpg' %}" alt="Logo" class="navbar-logo">
-            </a>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    <img src="{% static 'image/logo1.jpg' %}" alt="Logo" class="navbar-logo">
+                </a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="{% url 'home' %}">Home</a></li>
+
+                <li><a href="{% url 'ListeMaladie' %}">Formulaire</a></li>
+
+                <li><a href="{% url 'ListeMaladie' %}">Resultat</a></li>
+                <li><a href="{% url 'wiki' %}">Wiki</a></li>
+                {% if user.is_authenticated %}
+
+                <li><a href="{% url 'historique' %}">historique results</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                <li><a href="{% url 'register' %}">Register</a></li>
+                <li><a href="{% url 'login' %}">Login</a></li>
+                {% endif %}
+            </ul>
         </div>
-        <ul class="nav navbar-nav">
-            <li><a href="{% url 'home' %}">Home</a></li>
-
-            <li><a href="{% url 'ListeMaladie' %}">Formulaire</a></li>
-
-            <li><a href="{% url 'ListeMaladie' %}">Resultat</a></li>
-            <li><a href="{% url 'wiki' %}">Wiki</a></li>
-            {% if user.is_authenticated %}
-            
-            <li><a href="{% url 'historique' %}">historique results</a></li>
-            <li><a href="{% url 'logout' %}">Logout</a></li>
-        {% else %}
-            <li><a href="{% url 'register' %}">Register</a></li>
-            <li><a href="{% url 'login' %}">Login</a></li>
-        {% endif %}
-        </ul>
-    </div>
-</nav>
-      <div class="container">
+    </nav>
+    <div class="container">
         {% block content%}
         {% endblock content%}
-      </div>
-      
-     <footer>
+    </div>
+
+    <footer class="site-footer">
         <div class="footer-content">
+            <div class="footer-section">
+                <h4>GeneGuard</h4>
+                <p>Votre partenaire santé pour une médecine préventive et personnalisée.</p>
+            </div>
             <div class="footer-section">
                 <h4>Produits</h4>
                 <ul>
-                    <li class="bleue"><a href="#">Suites Premium</a></li>
-                    <li class="bleue"><a href="#">Évaluations d'Équipe</a></li>
-                    <li class="bleue"><a href="#">Tests Spécialisés</a></li>
-                    <li class="bleue"><a href="#">Témoignages</a></li>
+                    <li><a href="#">Suites Premium</a></li>
+                    <li><a href="#">Évaluations</a></li>
+                    <li><a href="#">Tests Spécialisés</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>Ressources</h4>
                 <ul>
-                    <li class="bleue"><a href="#">Test des maladies</a></li>
-                    <li class="bleue"><a href="#">Les maladies </a></li>
-                    <li class="bleue"><a href="#">Articles</a></li>
-                    <li class="bleue"><a href="#">Notre Cadre</a></li>
+                    <li><a href="#">Guide des maladies</a></li>
+                    <li><a href="#">Articles</a></li>
+                    <li><a href="#">FAQ</a></li>
                 </ul>
             </div>
-            <div class="footer-section">
-                <h4>Aide</h4>
-                <ul>
-                    <li class="bleue"><a href="#">Nous Contacter</a></li>
-                    <li class="bleue"><a href="#">FAQ</a></li>
-                    <li class="bleue"><a href="#">Vos Testes</a></li>
-                    <li class="bleue"><a href="#">Changer de Langue</a></li>
-                </ul>
+            <div class="footer-section social-section">
+                <h4>Suivez-nous</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
             </div>
-           <div class="footer-s">
-          <h3>Suivez-nous</h3>
-          <div class="social-icons">
-            <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-linkedin"></i></a>
-          </div>
-        </div> 
         </div>
-        
-      
-        <div class="footer-bottom">
-            <p>© 2025 GENE-GUARD</p>
-            <p><a href="#">Conditions Générales</a> | <a href="#">Politique de Confidentialité</a></p>
-        </div>
-      </footer>
 
-    </body>
-   
+        <div class="footer-bottom">
+            <p>&copy; 2025 GeneGuard. Tous droits réservés.</p>
+            <p><a href="#">Conditions</a> | <a href="#">Confidentialité</a></p>
+        </div>
+    </footer>
+
+</body>
+
 </html>
