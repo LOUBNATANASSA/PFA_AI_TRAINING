@@ -1,49 +1,65 @@
 from django.shortcuts import render, HttpResponse , redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
 # Create your views here.
+# Page d'accueil accessible à tous
 def home(request):
-    
     return render(request,'welcome/home.html',{'title':'GeneGuard'})
-    
-def test_guidelines(request):
-    return render(request,'welcome/test_guidelines.html',{'title':'GeneGuard'})
 
-def test_finish(request):
-    return render(request,'welcome/test_finish.html',{'title':'GeneGuard'})
-
-def test_finish1(request):
-    return render(request,'welcome/test_finish1.html',{'title':'GeneGuard'})
-
-
-def formulaire_Sickle_cell_anemia(request):
-    return render(request,'welcome/Sickle_cell_anemia_form.html',{'title':'Formulaire'})
-
-def formulaire_Galactosemia(request):
-    return render(request,'welcome/Galactosemia_form.html',{'title':'Formulaire'})
-
-
-def formulaire(request):
-    return render(request,'welcome/formulaire.html',{'title':'Formulaire'})
-
-def formulaire_hypercholesterolemia(request):
-    return render(request,'welcome/hypercholesterolemia.html',{'title':'Formulaire'})
-
-def resultat(request):
-    return render(request,'welcome/resultat.html',{'title':'Resultat'})
-
-def resultat_hypercholesterolemia(request):
-    return render(request,'welcome/resultat_hypercholesterolemia.html',{'title':'Resultat_hypercholesterolemia'})
-
+# Pages accessibles à tous
 def ListeMaladie(request):
     return render(request,'welcome/ListeMaladie.html',{'title':'ListeMaladie'})
 
+# ============================================================
+# PAGES PROTÉGÉES - Nécessitent une connexion utilisateur
+# ============================================================
+
+@login_required
+def test_guidelines(request):
+    return render(request,'welcome/test_guidelines.html',{'title':'GeneGuard'})
+
+@login_required
+def test_finish(request):
+    return render(request,'welcome/test_finish.html',{'title':'GeneGuard'})
+
+@login_required
+def test_finish1(request):
+    return render(request,'welcome/test_finish1.html',{'title':'GeneGuard'})
+
+@login_required
+def formulaire_Sickle_cell_anemia(request):
+    return render(request,'welcome/Sickle_cell_anemia_form.html',{'title':'Formulaire'})
+
+@login_required
+def formulaire_Galactosemia(request):
+    return render(request,'welcome/Galactosemia_form.html',{'title':'Formulaire'})
+
+@login_required
+def formulaire(request):
+    return render(request,'welcome/formulaire.html',{'title':'Formulaire'})
+
+@login_required
+def formulaire_hypercholesterolemia(request):
+    return render(request,'welcome/hypercholesterolemia.html',{'title':'Formulaire'})
+
+@login_required
+def resultat(request):
+    return render(request,'welcome/resultat.html',{'title':'Resultat'})
+
+@login_required
+def resultat_hypercholesterolemia(request):
+    return render(request,'welcome/resultat_hypercholesterolemia.html',{'title':'Resultat_hypercholesterolemia'})
+
+@login_required
 def formulaire_diabetes(request):
     return render(request, 'welcome/resultat-diabetes.html', {'title': 'Évaluation Diabète'})
+
+@login_required
 def resultat_diabete(request):
     result_raw = request.session.get('diabetes_result', '')
     parts = result_raw.split("Probabilité estimée : ")
@@ -63,18 +79,27 @@ def resultat_diabete(request):
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from .models import SickleCellResult  # Import du modèle
+from .models import SickleCellResult, UserProfile  # Import des modèles
 
-@csrf_exempt  # Désactive la protection CSRF (utile pour le développement)
+@csrf_exempt
+@login_required
 def save_sickle_cell_result(request):
-    if request.method == "POST":  # Vérifie si la requête est POST
+    if request.method == "POST":
         try:
-            data = json.loads(request.body)  # Convertit le JSON reçu en dictionnaire Python
-            result = SickleCellResult.objects.create(responses=data)  # Enregistre en base
-            return JsonResponse({"message": "Données enregistrées avec succès", "id": result.user_id}, status=201)  
+            data = json.loads(request.body)
+            # Récupérer le profil de l'utilisateur connecté
+            user_profile = UserProfile.objects.get(user=request.user)
+            # Créer le résultat lié à l'utilisateur
+            result = SickleCellResult.objects.create(
+                user_profile=user_profile,
+                responses=data
+            )
+            return JsonResponse({"message": "Données enregistrées avec succès", "id": result.user_id}, status=201)
+        except UserProfile.DoesNotExist:
+            return JsonResponse({"error": "Profil utilisateur non trouvé"}, status=400)
         except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)  # En cas d'erreur
-    return JsonResponse({"error": "Méthode non autorisée"}, status=405)  # Si ce n'est pas une requête POST
+            return JsonResponse({"error": str(e)}, status=400)
+    return JsonResponse({"error": "Méthode non autorisée"}, status=405)
 
 
 
@@ -98,20 +123,24 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import CholesterolResult
 
-@csrf_exempt  # Pour autoriser la requête POST
+@csrf_exempt
+@login_required
 def Cholesterol_results(request):
     if request.method == 'POST':
         try:
-            # Récupérer les données JSON envoyées par le frontend
             data = json.loads(request.body)
             responses = data.get('responses', {})
-            
-            # Créer un nouvel objet CholesterolResult avec les réponses
-            result = CholesterolResult(responses=responses)
-            result.save()  # Sauvegarder dans la base de données
-            
-            # Répondre avec un message de succès
+            # Récupérer le profil de l'utilisateur connecté
+            user_profile = UserProfile.objects.get(user=request.user)
+            # Créer le résultat lié à l'utilisateur
+            result = CholesterolResult(
+                user_profile_id=user_profile,
+                responses=responses
+            )
+            result.save()
             return JsonResponse({'status': 'success', 'message': 'Résultats enregistrés avec succès'})
+        except UserProfile.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Profil utilisateur non trouvé'}, status=400)
         except json.JSONDecodeError:
             return JsonResponse({'status': 'error', 'message': 'Données invalides'}, status=400)
     return JsonResponse({'status': 'error', 'message': 'Méthode HTTP non autorisée'}, status=405)
@@ -136,14 +165,16 @@ from django.shortcuts import render, redirect
 
 def login_view(request):
     if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
+        username = request.POST.get("username", "")
+        password = request.POST.get("password", "")
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')  # Redirige vers la page d'accueil ou une autre
+            return redirect('home')
         else:
-            return render(request, 'welcome/home.html')
+            return render(request, 'welcome/login.html', {
+                'error': 'Nom d\'utilisateur ou mot de passe incorrect.'
+            })
     return render(request, 'welcome/login.html')
     
 from django.shortcuts import render, redirect
@@ -203,6 +234,33 @@ from django.contrib.auth import logout
 def logout_view(request):
     logout(request)
     return redirect("login")
+
+@login_required
+def profile_view(request):
+    """Affiche le profil utilisateur avec ses informations et historique de tests"""
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+        # Calculer l'IMC
+        height_m = user_profile.height / 100
+        imc = round(user_profile.weight / (height_m * height_m), 1) if height_m > 0 else 0
+    except UserProfile.DoesNotExist:
+        user_profile = None
+        imc = 0
+    
+    # Récupérer l'historique des tests de l'utilisateur
+    sickle_results = []
+    cholesterol_results = []
+    
+    if user_profile:
+        sickle_results = SickleCellResult.objects.filter(user_profile=user_profile).order_by('-created_at')
+        cholesterol_results = CholesterolResult.objects.filter(user_profile_id=user_profile).order_by('-created_at')
+    
+    return render(request, "welcome/profile.html", {
+        'user_profile': user_profile,
+        'imc': imc,
+        'sickle_results': sickle_results,
+        'cholesterol_results': cholesterol_results,
+    })
 
 def historique_view(request):
     return render(request, "welcome/historique.html")

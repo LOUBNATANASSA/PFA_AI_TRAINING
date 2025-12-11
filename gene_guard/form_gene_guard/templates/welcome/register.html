@@ -1,47 +1,105 @@
 {% extends 'welcome/base.html'%}
 {% load static%}
 {% block content%}
-<div class="login-card">
-    <h2 class="title">Create an Account</h2>
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
 
-    {% if error %}
+<div class="auth-container">
+    <div class="login-card">
+        <div class="auth-icon">
+            <i class="fas fa-user-plus"></i>
+        </div>
+
+        <h2 class="title">Créer un compte</h2>
+        <p class="subtitle">Rejoignez GeneGuard pour des analyses génétiques personnalisées</p>
+
+        {% if error %}
         <p class="error">{{ error }}</p>
-    {% endif %}
+        {% endif %}
 
-    <form method="post">
-        {% csrf_token %}
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
+        <form method="post">
+            {% csrf_token %}
 
-        <input type="number" name="age" placeholder="Age" min="0" required>
-        <input type="number" name="weight" placeholder="Weight (kg)" min="0" step="0.1" required>
-        <input type="number" name="height" placeholder="Height (cm)" min="0" step="0.1" required>
+            <!-- Informations de connexion -->
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur</label>
+                <i class="fas fa-user input-icon"></i>
+                <input type="text" id="username" name="username" placeholder="Choisissez un nom d'utilisateur" required>
+            </div>
 
-        <select name="gender" required>
-            <option value="" disabled selected>Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            
-        </select>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <i class="fas fa-envelope input-icon"></i>
+                <input type="email" id="email" name="email" placeholder="votre@email.com" required>
+            </div>
 
-        <select name="blood_type" required>
-            <option value="" disabled selected>Select Blood Type</option>
-            <option value="A+">A+</option>
-            <option value="A-">A-</option>
-            <option value="B+">B+</option>
-            <option value="B-">B-</option>
-            <option value="AB+">AB+</option>
-            <option value="AB-">AB-</option>
-            <option value="O+">O+</option>
-            <option value="O-">O-</option>
-        </select>
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" id="password" name="password" placeholder="Créez un mot de passe sécurisé"
+                    required>
+            </div>
 
-        <button type="submit">Register</button>
+            <div class="auth-divider">
+                <span>Informations médicales</span>
+            </div>
 
-    <p class="register-link">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
-    {% if error %}
-    <p class="error">{{ error }}</p>
-{% endif %}
+            <!-- Informations personnelles -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="age">Âge</label>
+                    <i class="fas fa-birthday-cake input-icon"></i>
+                    <input type="number" id="age" name="age" placeholder="Votre âge" min="0" max="120" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="gender">Genre</label>
+                    <i class="fas fa-venus-mars input-icon"></i>
+                    <select id="gender" name="gender" required>
+                        <option value="" disabled selected>Sélectionner</option>
+                        <option value="male">Homme</option>
+                        <option value="female">Femme</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="weight">Poids (kg)</label>
+                    <i class="fas fa-weight input-icon"></i>
+                    <input type="number" id="weight" name="weight" placeholder="Ex: 70" min="0" step="0.1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="height">Taille (cm)</label>
+                    <i class="fas fa-ruler-vertical input-icon"></i>
+                    <input type="number" id="height" name="height" placeholder="Ex: 175" min="0" step="0.1" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="blood_type">Groupe sanguin</label>
+                <i class="fas fa-tint input-icon"></i>
+                <select id="blood_type" name="blood_type" required>
+                    <option value="" disabled selected>Sélectionner votre groupe</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+            </div>
+
+            <button type="submit">
+                <i class="fas fa-user-check"></i> Créer mon compte
+            </button>
+        </form>
+
+        <p class="register-link">
+            Déjà inscrit ? <a href="{% url 'login' %}">Se connecter</a>
+        </p>
+    </div>
 </div>
 {% endblock %}

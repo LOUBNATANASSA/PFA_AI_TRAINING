@@ -1,0 +1,124 @@
+{% extends 'welcome/base.html'%}
+{% load static%}
+{% block content%}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<div class="profile-container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-avatar">
+            {% if user_profile.gender == 'male' %}
+            <i class="fas fa-male"></i>
+            {% else %}
+            <i class="fas fa-female"></i>
+            {% endif %}
+        </div>
+        <div class="profile-info">
+            <h1>{{ user.username }}</h1>
+            <p><i class="fas fa-envelope"></i> {{ user.email }}</p>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="profile-stats">
+        <div class="stat-card">
+            <h3>Âge</h3>
+            <span class="value">{{ user_profile.age }}<span class="unit">ans</span></span>
+        </div>
+        <div class="stat-card">
+            <h3>Poids</h3>
+            <span class="value">{{ user_profile.weight }}<span class="unit">kg</span></span>
+        </div>
+        <div class="stat-card">
+            <h3>Taille</h3>
+            <span class="value">{{ user_profile.height }}<span class="unit">cm</span></span>
+        </div>
+        <div class="stat-card">
+            <h3>Groupe Sanguin</h3>
+            <span class="value">{{ user_profile.blood_type }}</span>
+        </div>
+    </div>
+
+    <!-- Personal Information Section -->
+    <div class="profile-section">
+        <div class="profile-section-header">
+            <i class="fas fa-user-circle"></i>
+            <h2>Informations Personnelles</h2>
+        </div>
+        <div class="profile-section-content">
+            <div class="info-list">
+                <div class="info-item">
+                    <label>Nom d'utilisateur</label>
+                    <span>{{ user.username }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Email</label>
+                    <span>{{ user.email }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Genre</label>
+                    <span>{% if user_profile.gender == 'male' %}Homme{% else %}Femme{% endif %}</span>
+                </div>
+                <div class="info-item">
+                    <label>IMC (Indice de Masse Corporelle)</label>
+                    <span>{{ imc }} kg/m²</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test History Section -->
+    <div class="profile-section">
+        <div class="profile-section-header">
+            <i class="fas fa-flask"></i>
+            <h2>Historique des Tests</h2>
+        </div>
+        <div class="profile-section-content">
+            {% if sickle_results or cholesterol_results %}
+            <table class="test-history-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type de Test</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in sickle_results %}
+                    <tr>
+                        <td>{{ result.created_at|date:"d/m/Y H:i" }}</td>
+                        <td>Drépanocytose (Sickle Cell)</td>
+                        <td><span class="status-badge low-risk">Complété</span></td>
+                    </tr>
+                    {% endfor %}
+                    {% for result in cholesterol_results %}
+                    <tr>
+                        <td>{{ result.created_at|date:"d/m/Y H:i" }}</td>
+                        <td>Hypercholestérolémie</td>
+                        <td><span class="status-badge low-risk">Complété</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <p>Aucun test effectué pour le moment</p>
+                <a href="{% url 'ListeMaladie' %}" class="btn"
+                    style="margin-top: 20px; display: inline-block; padding: 12px 30px; background: linear-gradient(135deg, #00A651, #00B4D8); color: white; border-radius: 25px; text-decoration: none; font-weight: 600;">
+                    <i class="fas fa-play"></i> Commencer un test
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="{% url 'logout' %}" class="btn"
+            style="display: inline-block; padding: 14px 40px; background: #ffffff; color: #c62828; border: 2px solid #c62828; border-radius: 25px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;">
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+        </a>
+    </div>
+</div>
+{% endblock %}
