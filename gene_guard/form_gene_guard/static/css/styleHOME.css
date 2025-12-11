@@ -247,16 +247,42 @@
     opacity: 0.2;
 }
 
+/* Style des titres de section */
+.section-title {
+    font-size: 1.6em;
+    color: #00A651;
+    margin-bottom: 20px;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 12px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #00A651, #00B4D8);
+    border-radius: 2px;
+}
+
 /* Style des paragraphes */
 .paragraphes p {
     font-size: 1.1em;
-    /* Taille de la police */
-    line-height: 1.6;
-    /* Hauteur de ligne */
-    color: #333;
-    /* Couleur du texte */
-    margin: 0;
-    /* Supprimer les marges par défaut */
+    line-height: 1.8;
+    color: #4a5568;
+    margin-bottom: 15px;
+}
+
+.paragraphes p:last-child {
+    margin-bottom: 0;
+}
+
+.paragraphes strong {
+    color: #00A651;
+    font-weight: 600;
 }
 
 /* Conteneur de l'image */

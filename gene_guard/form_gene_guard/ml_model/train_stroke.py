@@ -9,10 +9,10 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 
-# 1. On récupère le chemin du dossier actuel (ml_model)
+# recuperer le chemi du dossier actuel
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# 2. On construit le chemin vers le fichier "stroke.csv"
+# 2.construire chemin vers la dataset
 csv_path = os.path.join(current_dir, 'stroke.csv')
 
 print(f"Chargement des données depuis : {csv_path}")
@@ -23,11 +23,11 @@ except FileNotFoundError:
     print("ERREUR : Je ne trouve pas 'stroke.csv'. Avez-vous bien renommé le fichier ?")
     exit()
 
-# 3. Préparation des données
+# preparer les donnees
 X = df.drop(['stroke', 'id'], axis=1)
 y = df['stroke']
 
-# Définition des colonnes
+# separation des colonnes
 numeric_features = ['age', 'avg_glucose_level', 'bmi']
 categorical_features = ['gender', 'ever_married', 'work_type', 'Residence_type', 'smoking_status']
 passthrough_features = ['hypertension', 'heart_disease']
