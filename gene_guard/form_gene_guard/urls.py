@@ -22,6 +22,7 @@ urlpatterns = [
     path('historique/', historique_view, name='historique'),
 
     path('save-result/', save_sickle_cell_result, name='save_sickle_cell_result'),
+    path('save-galactosemia-result/', views.save_galactosemia_result, name='save_galactosemia_result'),
 
     path('get-sickle-cell-results/', views.get_sickle_cell_results, name='get_sickle_cell_results'),
 

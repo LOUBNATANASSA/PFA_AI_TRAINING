@@ -83,29 +83,46 @@ def resultat_diabete(request):
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from .models import SickleCellResult, UserProfile  # Import des modèles
+from .models import SickleCellResult, UserProfile, GalactosemiaResult, DiabetesResult, CardioResult, GeneralResult # Import des modèles
 
 @csrf_exempt
 def save_sickle_cell_result(request):
     """Sauvegarde les résultats du test Sickle Cell - AJAX endpoint"""
+    # LOGGING START
+    import datetime
+    with open('debug_log.txt', 'a') as f:
+        f.write(f"\n--- [Sickle Save] Request at {datetime.datetime.now()} ---\n")
+        f.write(f"User: {request.user} (Is Auth: {request.user.is_authenticated})\n")
+        f.write(f"Method: {request.method}\n")
+        f.write(f"Cookies: {request.COOKIES.keys()}\n")
+    # LOGGING END
+
     # Vérification manuelle de l'authentification pour AJAX
     if not request.user.is_authenticated:
+        with open('debug_log.txt', 'a') as f: f.write("Error: Not authenticated\n")
         return JsonResponse({"error": "Non authentifié", "redirect": "/login/"}, status=401)
     
     if request.method == "POST":
         try:
             data = json.loads(request.body)
+            with open('debug_log.txt', 'a') as f: f.write(f"Data received: {data}\n")
+            
             # Récupérer le profil de l'utilisateur connecté
             user_profile = UserProfile.objects.get(user=request.user)
+            with open('debug_log.txt', 'a') as f: f.write(f"Profile found: {user_profile.id}\n")
+            
             # Créer le résultat lié à l'utilisateur
             result = SickleCellResult.objects.create(
                 user_profile=user_profile,
                 responses=data
             )
+            with open('debug_log.txt', 'a') as f: f.write(f"SUCCESS: Saved Result ID {result.user_id}\n")
             return JsonResponse({"message": "Données enregistrées avec succès", "id": result.user_id}, status=201)
         except UserProfile.DoesNotExist:
+            with open('debug_log.txt', 'a') as f: f.write("Error: UserProfile DoesNotExist\n")
             return JsonResponse({"error": "Profil utilisateur non trouvé. Veuillez compléter votre inscription."}, status=400)
         except Exception as e:
+            with open('debug_log.txt', 'a') as f: f.write(f"Error: {e}\n")
             return JsonResponse({"error": str(e)}, status=400)
     return JsonResponse({"error": "Méthode non autorisée"}, status=405)
 
@@ -124,6 +141,30 @@ def get_sickle_cell_results(request):
         # Si aucun résultat n'est trouvé, renvoyer une erreur
         return JsonResponse({"error": "Aucun résultat trouvé."}, status=404)
 
+@csrf_exempt
+def save_galactosemia_result(request):
+    """Sauvegarde les résultats du test Galactosemia - AJAX endpoint"""
+    # Vérification manuelle de l'authentification pour AJAX
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Non authentifié", "redirect": "/login/"}, status=401)
+    
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            # Récupérer le profil de l'utilisateur connecté
+            user_profile = UserProfile.objects.get(user=request.user)
+            # Créer le résultat lié à l'utilisateur
+            result = GalactosemiaResult.objects.create(
+                user_profile=user_profile,
+                responses=data
+            )
+            return JsonResponse({"message": "Données enregistrées avec succès", "id": result.user_id}, status=201)
+        except UserProfile.DoesNotExist:
+            return JsonResponse({"error": "Profil utilisateur non trouvé. Veuillez compléter votre inscription."}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+    return JsonResponse({"error": "Méthode non autorisée"}, status=405)
+
 
 
 from django.http import JsonResponse
@@ -134,28 +175,44 @@ from .models import CholesterolResult
 @csrf_exempt
 def Cholesterol_results(request):
     """Sauvegarde les résultats du test Cholestérol - AJAX endpoint"""
+    # LOGGING START
+    import datetime
+    with open('debug_log.txt', 'a') as f:
+        f.write(f"\n--- [Cholesterol Save] Request at {datetime.datetime.now()} ---\n")
+        f.write(f"User: {request.user} (Is Auth: {request.user.is_authenticated})\n")
+    # LOGGING END
+
     # Vérification manuelle de l'authentification pour AJAX
     if not request.user.is_authenticated:
+        with open('debug_log.txt', 'a') as f: f.write("Error: Not authenticated\n")
         return JsonResponse({'status': 'error', 'message': 'Non authentifié', 'redirect': '/login/'}, status=401)
     
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
+            with open('debug_log.txt', 'a') as f: f.write(f"Data received: {data}\n")
             responses = data.get('responses', {})
+            
             # Récupérer le profil de l'utilisateur connecté
             user_profile = UserProfile.objects.get(user=request.user)
+            with open('debug_log.txt', 'a') as f: f.write(f"Profile found: {user_profile.id}\n")
+            
             # Créer le résultat lié à l'utilisateur
             result = CholesterolResult(
                 user_profile_id=user_profile,
                 responses=responses
             )
             result.save()
+            with open('debug_log.txt', 'a') as f: f.write(f"SUCCESS: Saved Result ID {result.user_id}\n")
             return JsonResponse({'status': 'success', 'message': 'Résultats enregistrés avec succès'})
         except UserProfile.DoesNotExist:
+            with open('debug_log.txt', 'a') as f: f.write("Error: UserProfile DoesNotExist\n")
             return JsonResponse({'status': 'error', 'message': 'Profil utilisateur non trouvé. Veuillez compléter votre inscription.'}, status=400)
         except json.JSONDecodeError:
+            with open('debug_log.txt', 'a') as f: f.write("Error: JSON Decode Error\n")
             return JsonResponse({'status': 'error', 'message': 'Données invalides'}, status=400)
         except Exception as e:
+            with open('debug_log.txt', 'a') as f: f.write(f"Error: {e}\n")
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
     return JsonResponse({'status': 'error', 'message': 'Méthode HTTP non autorisée'}, status=405)
 
@@ -287,18 +344,30 @@ def historique_view(request):
     # Récupérer tous les résultats de tests
     sickle_results = []
     cholesterol_results = []
+    galactosemia_results = []
+    diabetes_results = []
+    cardio_results = []
+    general_results = []
     
     if user_profile:
         sickle_results = SickleCellResult.objects.filter(user_profile=user_profile).order_by('-created_at')
         cholesterol_results = CholesterolResult.objects.filter(user_profile_id=user_profile).order_by('-created_at')
+        galactosemia_results = GalactosemiaResult.objects.filter(user_profile=user_profile).order_by('-created_at')
+        diabetes_results = DiabetesResult.objects.filter(user_profile=user_profile).order_by('-created_at')
+        cardio_results = CardioResult.objects.filter(user_profile=user_profile).order_by('-created_at')
+        general_results = GeneralResult.objects.filter(user_profile=user_profile).order_by('-created_at')
     
     # Compter le nombre total de tests
-    total_tests = len(sickle_results) + len(cholesterol_results)
+    total_tests = len(sickle_results) + len(cholesterol_results) + len(galactosemia_results) + len(diabetes_results) + len(cardio_results) + len(general_results)
     
     return render(request, "welcome/historique.html", {
         'user_profile': user_profile,
         'sickle_results': sickle_results,
         'cholesterol_results': cholesterol_results,
+        'galactosemia_results': galactosemia_results,
+        'diabetes_results': diabetes_results,
+        'cardio_results': cardio_results,
+        'general_results': general_results,
         'total_tests': total_tests,
     })
 #model training
@@ -327,6 +396,19 @@ def predict_diabetes_result(request):
 
             # Stocker le résultat dans la session
             request.session['diabetes_result'] = full_result
+            
+            # SAUVEGARDER EN BASE DE DONNEES SI CONNECTÉ
+            if request.user.is_authenticated:
+                try:
+                    user_profile = UserProfile.objects.get(user=request.user)
+                    DiabetesResult.objects.create(
+                        user_profile=user_profile,
+                        input_data=data,
+                        result_data={"result": result_text, "percentage": percentage}
+                    )
+                except Exception as e:
+                    print(f"Erreur sauvegarde diabetes: {e}")
+
             return JsonResponse({"redirect_url": "/Resultat/diabete/"})
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
@@ -577,6 +659,18 @@ def predict_disease(request):
     # Format selected symptoms for display
     selected_display = [s.replace('_', ' ').strip().title() for s in selected_symptoms]
     
+    # SAUVEGARDER EN BASE DE DONNEES SI CONNECTÉ
+    if request.user.is_authenticated:
+        try:
+            user_profile = UserProfile.objects.get(user=request.user)
+            GeneralResult.objects.create(
+                user_profile=user_profile,
+                selected_symptoms=selected_symptoms,
+                predicted_diseases=predictions[:5] # Save top 5
+            )
+        except Exception as e:
+            print(f"Erreur sauvegarde general result: {e}")
+
     return render(request, 'welcome/disease_result.html', {
         'title': 'Disease Prediction Results',
         'predictions': predictions,
@@ -695,6 +789,25 @@ def predict_cardio(request):
             'active': 'Yes' if active else 'No'
         }
         
+
+        
+        # SAUVEGARDER EN BASE DE DONNEES SI CONNECTÉ
+        if request.user.is_authenticated:
+            try:
+                user_profile = UserProfile.objects.get(user=request.user)
+                CardioResult.objects.create(
+                    user_profile=user_profile,
+                    input_data=user_inputs,
+                    result_data={
+                        "probability": probability,
+                        "risk_level": risk_level,
+                        "risk_class": risk_class,
+                        "precautions": precautions
+                    }
+                )
+            except Exception as e:
+                print(f"Erreur sauvegarde cardio: {e}")
+
         return render(request, 'welcome/cardio_result.html', {
             'title': 'Cardiovascular Risk Assessment Results',
             'probability': round(probability, 1),

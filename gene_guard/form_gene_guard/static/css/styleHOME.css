@@ -138,6 +138,19 @@ body {
     }
 }
 
+.slides video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: none;
+    background-color: #000;
+}
+
+.slides video.active {
+    display: block;
+    animation: fadeIn 0.8s ease-out;
+}
+
 /* ========== CARDS SECTION ========== */
 .card-container {
     display: grid;

@@ -2,12 +2,12 @@ let total = 8;
 
 function nextQuestion(n) {
   document.getElementById(`q${n}`).classList.remove('active');
-  document.getElementById(`q${n+1}`).classList.add('active');
+  document.getElementById(`q${n + 1}`).classList.add('active');
   updateProgress(n + 1);
 }
 function prevQuestion(n) {
   document.getElementById(`q${n}`).classList.remove('active');
-  document.getElementById(`q${n-1}`).classList.add('active');
+  document.getElementById(`q${n - 1}`).classList.add('active');
   updateProgress(n - 1);
 }
 function updateProgress(step) {
@@ -31,25 +31,26 @@ function submitDiabetesForm() {
     body: formData,
     headers: {
       'X-CSRFToken': getCSRFToken()
-    }
+    },
+    credentials: 'include'
   })
-  .then(res => res.json())
-  .then(data => {
-    setTimeout(() => {
-      if (data.redirect_url) {
-        window.location.href = data.redirect_url;
-      } else {
+    .then(res => res.json())
+    .then(data => {
+      setTimeout(() => {
+        if (data.redirect_url) {
+          window.location.href = data.redirect_url;
+        } else {
+          document.getElementById("loadingIndicator").classList.add("hidden");
+          alert(data.result || data.error);
+        }
+      }, 7000); // attendre 7 secondes
+    })
+    .catch(error => {
+      setTimeout(() => {
         document.getElementById("loadingIndicator").classList.add("hidden");
-        alert(data.result || data.error);
-      }
-    }, 7000); // attendre 7 secondes
-  })
-  .catch(error => {
-    setTimeout(() => {
-      document.getElementById("loadingIndicator").classList.add("hidden");
-      alert("Erreur : " + error);
-    }, 7000);
-  });
+        alert("Erreur : " + error);
+      }, 7000);
+    });
 }
 
 function getCSRFToken() {

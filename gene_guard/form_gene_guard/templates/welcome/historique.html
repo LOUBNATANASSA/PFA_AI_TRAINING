@@ -176,6 +176,7 @@
     .response-item span {
         font-weight: 600;
         color: #1a3a52;
+        text-transform: uppercase;
     }
 
     .empty-state {
@@ -231,7 +232,8 @@
         </div>
     </div>
 
-    {% if sickle_results or cholesterol_results %}
+    {% if sickle_results or cholesterol_results or galactosemia_results or diabetes_results or cardio_results or
+    general_results %}
     <!-- Sickle Cell Results -->
     {% for result in sickle_results %}
     <div class="test-card">
@@ -282,6 +284,142 @@
             <h4 style="margin: 0 0 15px; color: #00A651;">Résultats détaillés</h4>
             <pre
                 style="background: #e8f5e9; padding: 15px; border-radius: 10px; overflow-x: auto; font-size: 13px; margin: 0;">{{ result.responses }}</pre>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Galactosemia Results -->
+    {% for result in galactosemia_results %}
+    <div class="test-card">
+        <div class="test-card-header" onclick="toggleCard(this)">
+            <div class="test-info">
+                <div class="test-icon" style="background: linear-gradient(135deg, #FF9800, #F57C00);">
+                    <i class="fas fa-bread-slice"></i>
+                </div>
+                <div class="test-details">
+                    <h3>Test Galactosémie</h3>
+                    <p>Analyse intolérance - ID #{{ result.user_id }}</p>
+                </div>
+            </div>
+            <div class="test-meta">
+                <span class="test-date"><i class="far fa-calendar"></i> {{ result.created_at|date:"d/m/Y" }}</span>
+                <span class="test-status status-completed"><i class="fas fa-check"></i> Complété</span>
+                <button class="expand-btn"><i class="fas fa-chevron-down"></i></button>
+            </div>
+        </div>
+        <div class="test-card-body">
+            <h4 style="margin: 0 0 15px; color: #00A651;">Résultats détaillés</h4>
+            <pre
+                style="background: #fff3e0; padding: 15px; border-radius: 10px; overflow-x: auto; font-size: 13px; margin: 0;">{{ result.responses }}</pre>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Diabetes Results -->
+    {% for result in diabetes_results %}
+    <div class="test-card">
+        <div class="test-card-header" onclick="toggleCard(this)">
+            <div class="test-info">
+                <div class="test-icon" style="background: linear-gradient(135deg, #2196F3, #1976D2);">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <div class="test-details">
+                    <h3>Test Diabète</h3>
+                    <p>Évaluation des risques - ID #{{ result.user_id }}</p>
+                </div>
+            </div>
+            <div class="test-meta">
+                <span class="test-date"><i class="far fa-calendar"></i> {{ result.created_at|date:"d/m/Y" }}</span>
+                <span class="test-status status-completed"><i class="fas fa-check"></i> Complété</span>
+                <button class="expand-btn"><i class="fas fa-chevron-down"></i></button>
+            </div>
+        </div>
+        <div class="test-card-body">
+            <h4 style="margin: 0 0 15px; color: #00A651;">Résultat final</h4>
+            <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                <strong>Résultat :</strong> {{ result.result_data.result }} <br>
+                <strong>Probabilité :</strong> {{ result.result_data.percentage }}%
+            </div>
+            <h5 style="margin: 0 0 10px; color: #5a6c7d;">Données d'entrées :</h5>
+            <pre
+                style="background: #f1f8e9; padding: 10px; border-radius: 8px; font-size: 12px; margin: 0;">{{ result.input_data }}</pre>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Cardio Results -->
+    {% for result in cardio_results %}
+    <div class="test-card">
+        <div class="test-card-header" onclick="toggleCard(this)">
+            <div class="test-info">
+                <div class="test-icon" style="background: linear-gradient(135deg, #E91E63, #C2185B);">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="test-details">
+                    <h3>Test Cardiovasculaire</h3>
+                    <p>Risque cardiaque - ID #{{ result.user_id }}</p>
+                </div>
+            </div>
+            <div class="test-meta">
+                <span class="test-date"><i class="far fa-calendar"></i> {{ result.created_at|date:"d/m/Y" }}</span>
+                <span class="test-status status-completed"><i class="fas fa-check"></i> Complété</span>
+                <button class="expand-btn"><i class="fas fa-chevron-down"></i></button>
+            </div>
+        </div>
+        <div class="test-card-body">
+            <h4 style="margin: 0 0 15px; color: #00A651;">Résultat final</h4>
+            <div style="background: #fce4ec; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                <strong>Risque :</strong> {{ result.result_data.risk_level }} ({{ result.result_data.probability }}%)
+                <br>
+                <strong>Précautions :</strong>
+                <ul style="margin: 5px 0 0 20px; padding: 0;">
+                    {% for p in result.result_data.precautions %}
+                    <li>{{ p }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <h5 style="margin: 0 0 10px; color: #5a6c7d;">Données d'entrées :</h5>
+            <pre
+                style="background: #fafafa; padding: 10px; border-radius: 8px; font-size: 12px; margin: 0;">{{ result.input_data }}</pre>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- General Disease Results -->
+    {% for result in general_results %}
+    <div class="test-card">
+        <div class="test-card-header" onclick="toggleCard(this)">
+            <div class="test-info">
+                <div class="test-icon" style="background: linear-gradient(135deg, #9C27B0, #7B1FA2);">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <div class="test-details">
+                    <h3>Prédiction Générale</h3>
+                    <p>Basé sur symptômes - ID #{{ result.user_id }}</p>
+                </div>
+            </div>
+            <div class="test-meta">
+                <span class="test-date"><i class="far fa-calendar"></i> {{ result.created_at|date:"d/m/Y" }}</span>
+                <span class="test-status status-completed"><i class="fas fa-check"></i> Complété</span>
+                <button class="expand-btn"><i class="fas fa-chevron-down"></i></button>
+            </div>
+        </div>
+        <div class="test-card-body">
+            <h4 style="margin: 0 0 15px; color: #00A651;">Top Prédictions</h4>
+            <div style="background: #f3e5f5; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                {% for pred in result.predicted_diseases %}
+                <div style="margin-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 5px;">
+                    <strong>{{ pred.disease }}</strong>: {{ pred.probability }}%
+                </div>
+                {% endfor %}
+            </div>
+            <h5 style="margin: 0 0 10px; color: #5a6c7d;">Symptômes signalés :</h5>
+            <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                {% for s in result.selected_symptoms %}
+                <span style="background: #e0e0e0; padding: 4px 10px; border-radius: 15px; font-size: 11px;">{{ s
+                    }}</span>
+                {% endfor %}
+            </div>
         </div>
     </div>
     {% endfor %}

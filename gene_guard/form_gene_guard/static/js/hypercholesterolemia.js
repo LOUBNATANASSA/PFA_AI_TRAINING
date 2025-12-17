@@ -184,17 +184,20 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         showErrorMessage();
       } else {
+        alert("Attempting to save results..."); // DEBUG ALERT
         // Désactiver le bouton pendant l'envoi
         submitBtn.disabled = true;
         submitBtn.innerHTML = 'Enregistrement...';
 
         // Envoi des réponses au backend Django
+        const token = getCookie('csrftoken');
         fetch('/Cholesterol-results/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
+            'X-CSRFToken': token
           },
+          credentials: 'include', // FORCE COOKIES
           body: JSON.stringify({ responses: answers })
         })
           .then(response => {
@@ -217,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function () {
           })
           .catch(error => {
             console.error('Erreur:', error);
-            alert('Une erreur est survenue. Veuillez réessayer.');
+            alert('Une erreur est survenue (Network/JS): ' + error);
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Finish';
           });

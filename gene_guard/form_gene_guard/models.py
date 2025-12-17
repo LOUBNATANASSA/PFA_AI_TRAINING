@@ -48,3 +48,44 @@ class SickleCellResult(models.Model):
 
     def __str__(self):
         return f"Result #{self.user_id}"
+
+class GalactosemiaResult(models.Model):
+    user_id = models.AutoField(primary_key=True)
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True)
+    responses = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Galactosemia Result #{self.user_id}"
+
+class DiabetesResult(models.Model):
+    user_id = models.AutoField(primary_key=True)
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True)
+    # Store input data (pregnancies, glucose, etc.)
+    input_data = models.JSONField()
+    # Store result (Probability %, Risk Level)
+    result_data = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Diabetes Result #{self.user_id}"
+
+class CardioResult(models.Model):
+    user_id = models.AutoField(primary_key=True)
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True)
+    input_data = models.JSONField()
+    result_data = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Cardio Result #{self.user_id}"
+
+class GeneralResult(models.Model):
+    user_id = models.AutoField(primary_key=True)
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True)
+    selected_symptoms = models.JSONField()
+    predicted_diseases = models.JSONField() # Top 5 predictions
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"General Result #{self.user_id}"

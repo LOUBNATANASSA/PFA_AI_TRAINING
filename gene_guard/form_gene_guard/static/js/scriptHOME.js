@@ -1,9 +1,9 @@
 
 
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     let index = 0;
-    const slides = document.querySelectorAll(".slides img");
+    const slides = document.querySelectorAll(".slides img, .slides video");
 
     function showNextSlide() {
         slides[index].classList.remove("active");
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Le bouton a bien été trouvé !");
 
     // Ajoute un événement pour tester la fonctionnalité du bouton
-    backToTopButton.addEventListener('click', function() {
+    backToTopButton.addEventListener('click', function () {
         console.log("Le bouton a été cliqué !");
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });

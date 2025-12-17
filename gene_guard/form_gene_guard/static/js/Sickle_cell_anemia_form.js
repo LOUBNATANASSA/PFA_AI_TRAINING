@@ -194,53 +194,54 @@ function saveUserResponse(questionNumber) {
 }
 
 function submitResponses() {
+  alert("Attempting to save results..."); // DEBUG ALERT
   saveUserResponse(15);
 
   // Afficher un indicateur de chargement
-  const submitBtn = document.querySelector('.submit-btn');
-  if (submitBtn) {
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = 'Enregistrement...';
-  }
+  submitBtn.innerHTML = 'Enregistrement...';
+}
 
-  fetch('/save-result/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': getCSRFToken()
-    },
-    body: JSON.stringify(userResponses)
+const token = getCSRFToken();
+// alert("Token found: " + token); // DEBUG
+
+fetch('/save-result/', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-CSRFToken': token
+  },
+  credentials: 'include', // FORCE COOKIES
+  body: JSON.stringify(userResponses)
+})
+  .then(response => {
+    // alert("Response status: " + response.status); // DEBUG
+    if (response.status === 401 || response.status === 403) {
+      alert('Veuillez vous connecter pour enregistrer vos résultats.');
+      window.location.href = '/login/';
+      return;
+    }
+    return response.json();
   })
-    .then(response => {
-      if (response.status === 401 || response.status === 403) {
-        // Utilisateur non connecté, rediriger vers login
-        alert('Veuillez vous connecter pour enregistrer vos résultats.');
-        window.location.href = '/login/';
-        return;
-      }
-      return response.json();
-    })
-    .then(data => {
-      if (data && data.message) {
-        // Succès - rediriger vers historique
-        alert('Test enregistré avec succès !');
-        window.location.href = '/historique/';
-      } else if (data && data.error) {
-        alert('Erreur: ' + data.error);
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = 'Finish';
-        }
-      }
-    })
-    .catch(error => {
-      console.error('Erreur:', error);
-      alert('Une erreur est survenue. Veuillez réessayer.');
+  .then(data => {
+    if (data && (data.message || data.id)) {
+      alert('Test enregistré avec succès !');
+      window.location.href = '/historique/';
+    } else if (data && data.error) {
+      alert('Erreur: ' + data.error);
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.innerHTML = 'Finish';
       }
-    });
+    }
+  })
+  .catch(error => {
+    console.error('Erreur:', error);
+    alert('Une erreur est survenue (Network/JS): ' + error);
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Finish';
+    }
+  });
 }
 
 // Fonction pour récupérer le token CSRF
