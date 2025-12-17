@@ -11,7 +11,7 @@
         <div class="progress-fill" id="progressFill"></div>
         <div class="progress-circles">
           {% for i in "12345678" %}
-            <div class="progress-circle {% if forloop.first %}active{% endif %}" id="circle{{ i }}">{{ i }}</div>
+          <div class="progress-circle {% if forloop.first %}active{% endif %}" id="circle{{ i }}">{{ i }}</div>
           {% endfor %}
         </div>
       </div>
@@ -19,29 +19,32 @@
 
     <form id="DiabetesForm">
       <div class="question-container">
-        {% comment %} Questions 1–8 {% endcomment %}
-        {% with fields="Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin,BMI,DiabetesPedigreeFunction,Age"|split:"," %}
         {% for field in fields %}
         <div class="question {% if forloop.first %}active{% endif %}" id="q{{ forloop.counter }}">
-          <label>{{ forloop.counter }}. {{ field|capfirst }}:</label>
-          <input type="number" name="{{ field }}" step="0.1" required>
+          <label>{{ forloop.counter }}. {{ field.label }}:</label>
+          <input type="number" name="{{ field.name }}" step="0.1" placeholder="{{ field.placeholder }}" required>
           <div class="btn-group">
             {% if not forloop.first %}
-              <button type="button" class="prev-btn" onclick="prevQuestion({{ forloop.counter }})">Previous</button>
+            <button type="button" class="prev-btn" data-step="{{ forloop.counter }}"
+              onclick="prevQuestion(parseInt(this.dataset.step))">Previous</button>
             {% else %}
-              <div></div>
+            <div></div>
             {% endif %}
             {% if not forloop.last %}
-              <button type="button" class="next-btn" onclick="nextQuestion({{ forloop.counter }})">Next</button>
+            <button type="button" class="next-btn" data-step="{{ forloop.counter }}"
+              onclick="nextQuestion(parseInt(this.dataset.step))">Next</button>
             {% else %}
-              <button type="button" class="submit-btn" onclick="submitDiabetesForm()">Submit</button>
+            <button type="button" class="submit-btn" onclick="submitDiabetesForm()">Submit</button>
             {% endif %}
           </div>
         </div>
         {% endfor %}
-        {% endwith %}
       </div>
     </form>
+
+    <div id="loadingIndicator" class="hidden" style="text-align: center; margin-top: 20px;">
+      <p>⏳ Analyzing your data, please wait...</p>
+    </div>
 
     <div id="resultDisplay" class="result-message hidden"></div>
     <h6>Please answer the following questions as accurately as possible.</h6>
