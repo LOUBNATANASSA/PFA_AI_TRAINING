@@ -61,23 +61,41 @@ def resultat_hypercholesterolemia(request):
 
 @login_required
 def formulaire_diabetes(request):
-    return render(request, 'welcome/resultat-diabetes.html', {'title': 'Évaluation Diabète'})
+    fields = [
+        {"name": "Pregnancies", "label": "Pregnancies", "placeholder": "e.g., 2"},
+        {"name": "Glucose", "label": "Glucose", "placeholder": "e.g., 120"},
+        {"name": "BloodPressure", "label": "Blood Pressure", "placeholder": "e.g., 80"},
+        {"name": "SkinThickness", "label": "Skin Thickness", "placeholder": "e.g., 20"},
+        {"name": "Insulin", "label": "Insulin", "placeholder": "e.g., 85"},
+        {"name": "BMI", "label": "BMI", "placeholder": "e.g., 25.5"},
+        {"name": "DiabetesPedigreeFunction", "label": "Diabetes Pedigree Function", "placeholder": "e.g., 0.5"},
+        {"name": "Age", "label": "Age", "placeholder": "e.g., 35"}
+    ]
+    return render(request, 'welcome/diabetes_form.html', {'title': 'Évaluation Diabète', 'fields': fields})
 
 @login_required
 def resultat_diabete(request):
-    result_raw = request.session.get('diabetes_result', '')
-    parts = result_raw.split("Probabilité estimée : ")
-    conseil = parts[0] if len(parts) > 0 else ""
-    pourcentage_str = parts[1].replace(" %", "") if len(parts) > 1 else "0"
+    result_data = request.session.get('diabetes_result', {})
     
-    try:
-        pourcentage = float(pourcentage_str)
-    except:
-        pourcentage = 0
+    if isinstance(result_data, str):
+        # Fallback for old session data format
+        parts = result_data.split("Probabilité estimée : ")
+        conseil = parts[0] if len(parts) > 0 else ""
+        pourcentage_str = parts[1].replace(" %", "") if len(parts) > 1 else "0"
+        try:
+            pourcentage = float(pourcentage_str)
+        except:
+            pourcentage = 0
+        precautions = []
+    else:
+        conseil = result_data.get('result', '')
+        pourcentage = result_data.get('percentage', 0)
+        precautions = result_data.get('precautions', [])
 
     return render(request, 'welcome/resultat_diabete.html', {
         'conseil': conseil.strip(),
-        'pourcentage': pourcentage
+        'pourcentage': pourcentage,
+        'precautions': precautions
     })
 
 from django.http import JsonResponse
@@ -376,26 +394,51 @@ def predict_diabetes_result(request):
     if request.method == 'POST':
         try:
             data = request.POST
-            features = [
-                float(data.get("Pregnancies")),
-                float(data.get("Glucose")),
-                float(data.get("BloodPressure")),
-                float(data.get("SkinThickness")),
-                float(data.get("Insulin")),
-                float(data.get("BMI")),
-                float(data.get("DiabetesPedigreeFunction")),
-                float(data.get("Age")),
-            ]
+            # Extract features
+            pregnancies = float(data.get("Pregnancies"))
+            glucose = float(data.get("Glucose"))
+            bp = float(data.get("BloodPressure"))
+            skin = float(data.get("SkinThickness"))
+            insulin = float(data.get("Insulin"))
+            bmi = float(data.get("BMI"))
+            dpf = float(data.get("DiabetesPedigreeFunction"))
+            age = float(data.get("Age"))
+
+            features = [pregnancies, glucose, bp, skin, insulin, bmi, dpf, age]
+            
             model_path = os.path.join(os.path.dirname(__file__), 'ml_model', 'diabetes_model.pkl')
             model = joblib.load(model_path)
 
             probability = model.predict_proba([features])[0][1]
             percentage = round(probability * 100, 2)
             result_text = "⚠️ High risk of diabetes" if percentage >= 50 else "✅ Low risk of diabetes"
-            full_result = f"{result_text} Probabilité estimée : {percentage} %"
+            
+            # Generate Precautions
+            precautions = []
+            if percentage >= 50:
+                precautions.append("Consult a healthcare provider for a comprehensive diabetes screening.")
+                precautions.append("Monitor your blood sugar levels regularly.")
+            
+            if bmi >= 25:
+                precautions.append("Your BMI indicates you may be overweight. Aim for a healthy weight through diet and exercise.")
+            if glucose > 140:
+                precautions.append("Your glucose levels are high. Reduce intake of sugary foods and refined carbs.")
+            if bp > 80:
+                precautions.append("Monitor your blood pressure. Reduce sodium intake and manage stress.")
+            if age > 45:
+                precautions.append("Age is a risk factor. Ensure you have regular annual check-ups.")
+            if insulin > 100: # Arbitrary threshold for example
+                 precautions.append("High insulin levels may indicate insulin resistance.")
 
-            # Stocker le résultat dans la session
-            request.session['diabetes_result'] = full_result
+            if not precautions:
+                precautions.append("Maintain a healthy lifestyle with balanced diet and regular exercise.")
+
+            # Store result in session as a dict
+            request.session['diabetes_result'] = {
+                'result': result_text,
+                'percentage': percentage,
+                'precautions': precautions
+            }
             
             # SAUVEGARDER EN BASE DE DONNEES SI CONNECTÉ
             if request.user.is_authenticated:
@@ -404,7 +447,7 @@ def predict_diabetes_result(request):
                     DiabetesResult.objects.create(
                         user_profile=user_profile,
                         input_data=data,
-                        result_data={"result": result_text, "percentage": percentage}
+                        result_data={"result": result_text, "percentage": percentage, "precautions": precautions}
                     )
                 except Exception as e:
                     print(f"Erreur sauvegarde diabetes: {e}")
